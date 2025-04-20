@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event_tickets",
+  "info": {
+    "singularName": "event-ticket",
+    "pluralName": "event-tickets",
+    "displayName": "EventTickets",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "stock": {
+      "type": "integer"
+    },
+    "quantity": {
+      "type": "integer"
+    },
+    "isTable": {
+      "type": "boolean",
+      "default": false
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    },
+    "start_date": {
+      "type": "datetime"
+    },
+    "end_date": {
+      "type": "datetime"
+    },
+    "event_id": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::event.event",
+      "inversedBy": "event_tickets_ids"
+    }
+  }
+}

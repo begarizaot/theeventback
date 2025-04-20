@@ -1,0 +1,82 @@
+{
+  "kind": "collectionType",
+  "collectionName": "events",
+  "info": {
+    "singularName": "event",
+    "pluralName": "events",
+    "displayName": "Events",
+    "description": ""
+  },
+  "options": {},
+  "pluginOptions": {},
+  "attributes": {
+    "id_event": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "pluginOptions": {}
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {}
+    },
+    "start_date": {
+      "type": "datetime",
+      "required": true
+    },
+    "end_date": {
+      "type": "datetime",
+      "required": true
+    },
+    "url_image": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "following": {
+      "type": "integer",
+      "required": true,
+      "default": 0
+    },
+    "event_tickets_ids": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::event-ticket.event-ticket",
+      "mappedBy": "event_id"
+    },
+    "event_locations_id": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::event-location.event-location",
+      "inversedBy": "events_id"
+    },
+    "categories_id": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "mappedBy": "events_id"
+    },
+    "event_restriction_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::event-restriction.event-restriction"
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    },
+    "isEndDate": {
+      "type": "boolean",
+      "default": false
+    },
+    "event_status_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::event-status.event-status"
+    }
+  }
+}

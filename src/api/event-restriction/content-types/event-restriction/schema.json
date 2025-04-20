@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event_restrictions",
+  "info": {
+    "singularName": "event-restriction",
+    "pluralName": "event-restrictions",
+    "displayName": "EventRestrictions",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "order": {
+      "type": "integer",
+      "unique": true
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

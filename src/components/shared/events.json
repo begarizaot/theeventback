@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_shared_events",
+  "info": {
+    "displayName": "EventsCarrusel",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "event_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::event.event"
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "btn": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.link"
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

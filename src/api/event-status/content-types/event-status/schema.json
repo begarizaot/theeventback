@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event_statuses",
+  "info": {
+    "singularName": "event-status",
+    "pluralName": "event-statuses",
+    "displayName": "EventStatus"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

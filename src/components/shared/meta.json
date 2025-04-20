@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_metas",
+  "info": {
+    "displayName": "Meta",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "urlImage": {
+      "type": "string"
+    },
+    "keywords": {
+      "type": "string"
+    },
+    "site_name": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event_locations",
+  "info": {
+    "singularName": "event-location",
+    "pluralName": "event-locations",
+    "displayName": "EventLocations",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "formatted_address": {
+      "type": "string"
+    },
+    "place_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "vicinity": {
+      "type": "string"
+    },
+    "location": {
+      "type": "json"
+    },
+    "events_id": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::event.event",
+      "mappedBy": "event_locations_id"
+    }
+  }
+}
