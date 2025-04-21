@@ -8,5 +8,13 @@ module.exports = {
         auth: false,
       },
     },
+    {
+      method: "GET",
+      path: "/event/getEventMeta/:id",
+      handler: "event.getEventMeta",
+      config: {
+        auth: false,
+      },
+    },
   ],
 };

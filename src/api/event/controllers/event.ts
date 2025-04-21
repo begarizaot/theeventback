@@ -10,4 +10,8 @@ export default factories.createCoreController(table, ({ strapi }) => ({
   async getEventsHome() {
     return await strapi.service(table).getEventsHome();
   },
+  async getEventMeta(ctx) {
+    const { params } = ctx;
+    return await strapi.service(table).getEventMeta({ params });
+  },
 }));

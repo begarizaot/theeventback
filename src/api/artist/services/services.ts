@@ -43,6 +43,7 @@ export const filterGeneral = {
 };
 
 export const ArtistFindPage = async (
+  populateRes = null,
   filters = {},
   pageData = {
     pageSize: 10,
@@ -51,11 +52,27 @@ export const ArtistFindPage = async (
   sort = {}
 ) => {
   return await strapi.entityService.findPage("api::artist.artist", {
-    populate: populate,
+    populate: populateRes || populate,
     filters: {
       ...filters,
     },
     sort: sort,
     ...pageData,
   });
+};
+
+export const ArtistFindOne = async (
+  populateRes = null,
+  filters = {},
+  fields = null
+) => {
+  return (
+    await strapi.entityService.findMany("api::artist.artist", {
+      populate: populateRes || populate,
+      filters: {
+        ...filters,
+      },
+      fields: fields,
+    })
+  )[0];
 };

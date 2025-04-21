@@ -3,7 +3,7 @@
  */
 
 import { factories } from "@strapi/strapi";
-import { EventFindPage, filterGeneral } from "./services";
+import { EventFindOne, EventFindPage, filterGeneral } from "./services";
 
 const table = "api::event.event";
 
@@ -28,4 +28,26 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
+  async getEventMeta({ params }) {
+      try {
+        const service = await EventFindOne({}, { id_artist: params.id }, [
+          "id_event",
+          "name",
+          "url_image",
+        ]);
+        return {
+          data: {
+            id: service.id_event ?? "",
+            title: service.name ?? "",
+            urlImage: service.url_image ?? "",
+          },
+          status: true,
+        };
+      } catch (e) {
+        return {
+          status: false,
+          message: `${e?.message || ""}`,
+        };
+      }
+    },
 }));
