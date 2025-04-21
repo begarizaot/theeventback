@@ -15,11 +15,11 @@
     "url_image": {
       "type": "string"
     },
-    "events_id": {
+    "events_ids": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "oneToMany",
       "target": "api::event.event",
-      "inversedBy": "categories_id"
+      "mappedBy": "categories_id"
     }
   }
 }

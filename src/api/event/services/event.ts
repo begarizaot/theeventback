@@ -10,10 +10,16 @@ const table = "api::event.event";
 export default factories.createCoreService(table, () => ({
   async getEventsHome() {
     try {
-      const service = await EventFindPage(filterGeneral, {
-        pageSize: 3,
-        page: 1,
-      });
+      const service = await EventFindPage(
+        filterGeneral,
+        {
+          pageSize: 3,
+          page: 1,
+        },
+        {
+          start_date: "asc",
+        }
+      );
       return { data: service.results, status: true };
     } catch (e) {
       return {

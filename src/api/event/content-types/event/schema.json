@@ -7,7 +7,9 @@
     "displayName": "Events",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "pluginOptions": {},
   "attributes": {
     "id_event": {
@@ -56,9 +58,9 @@
     },
     "categories_id": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "manyToOne",
       "target": "api::category.category",
-      "mappedBy": "events_id"
+      "inversedBy": "events_ids"
     },
     "event_restriction_id": {
       "type": "relation",
@@ -77,6 +79,12 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::event-status.event-status"
+    },
+    "artists_ids": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::artist.artist",
+      "mappedBy": "events_ids"
     }
   }
 }

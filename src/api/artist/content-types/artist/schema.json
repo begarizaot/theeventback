@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "artists",
+  "info": {
+    "singularName": "artist",
+    "pluralName": "artists",
+    "displayName": "Artist"
+  },
+  "options": {},
+  "attributes": {
+    "id_artist": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "url_image": {
+      "type": "string"
+    },
+    "events_ids": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::event.event",
+      "inversedBy": "artists_ids"
+    },
+    "url_spotify": {
+      "type": "string"
+    }
+  }
+}

@@ -60,7 +60,8 @@ export const EventFindPage = async (
   pageData = {
     pageSize: 10,
     page: 1,
-  }
+  },
+  sort = {}
 ) => {
   return await strapi.entityService.findPage("api::event.event", {
     populate: populate,
@@ -68,6 +69,7 @@ export const EventFindPage = async (
       ...filters,
       isVisible: true,
     },
+    sort: sort,
     ...pageData,
   });
 };
