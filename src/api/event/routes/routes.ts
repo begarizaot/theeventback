@@ -10,6 +10,14 @@ module.exports = {
     },
     {
       method: "GET",
+      path: "/event/getEventDetail/:id",
+      handler: "event.getEventDetail",
+      config: {
+        auth: false,
+      },
+    },
+    {
+      method: "GET",
       path: "/event/getEventMeta/:id",
       handler: "event.getEventMeta",
       config: {

@@ -85,6 +85,15 @@
       "relation": "manyToMany",
       "target": "api::artist.artist",
       "mappedBy": "events_ids"
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "url_youtube": {
+      "type": "json"
+    },
+    "urls_images_advertising": {
+      "type": "json"
     }
   }
 }

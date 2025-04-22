@@ -2,7 +2,15 @@ import { useMoment } from "../../../hooks";
 
 const populate: any = {
   events_ids: {
-    fields: ["id", "id_event", "name", "url_image", "start_date"],
+    fields: [
+      "id",
+      "id_event",
+      "name",
+      "description",
+      "url_image",
+      "start_date",
+      "end_date",
+    ],
     populate: {
       event_locations_id: {
         fields: ["id", "vicinity"],

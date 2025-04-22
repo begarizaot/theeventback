@@ -588,6 +588,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    description: Schema.Attribute.Blocks;
     end_date: Schema.Attribute.DateTime & Schema.Attribute.Required;
     event_locations_id: Schema.Attribute.Relation<
       'manyToOne',
@@ -624,6 +625,8 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     url_image: Schema.Attribute.String & Schema.Attribute.Required;
+    url_youtube: Schema.Attribute.JSON;
+    urls_images_advertising: Schema.Attribute.JSON;
   };
 }
 

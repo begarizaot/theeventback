@@ -28,26 +28,37 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
+  async getEventDetail({ params }) {
+    try {
+      const service = await EventFindOne(null, { id_event: params.id });
+      return { data: service, status: true };
+    } catch (e) {
+      return {
+        status: false,
+        message: `${e?.message || ""}`,
+      };
+    }
+  },
   async getEventMeta({ params }) {
-      try {
-        const service = await EventFindOne({}, { id_artist: params.id }, [
-          "id_event",
-          "name",
-          "url_image",
-        ]);
-        return {
-          data: {
-            id: service.id_event ?? "",
-            title: service.name ?? "",
-            urlImage: service.url_image ?? "",
-          },
-          status: true,
-        };
-      } catch (e) {
-        return {
-          status: false,
-          message: `${e?.message || ""}`,
-        };
-      }
-    },
+    try {
+      const service = await EventFindOne({}, { id_event: params.id }, [
+        "id_event",
+        "name",
+        "url_image",
+      ]);
+      return {
+        data: {
+          id: service.id_event ?? "",
+          title: service.name ?? "",
+          urlImage: service.url_image ?? "",
+        },
+        status: true,
+      };
+    } catch (e) {
+      return {
+        status: false,
+        message: `${e?.message || ""}`,
+      };
+    }
+  },
 }));
