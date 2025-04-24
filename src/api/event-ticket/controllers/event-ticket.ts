@@ -2,6 +2,13 @@
  * event-ticket controller
  */
 
-import { factories } from '@strapi/strapi'
+import { factories } from "@strapi/strapi";
 
-export default factories.createCoreController('api::event-ticket.event-ticket');
+const table = "api::event-ticket.event-ticket";
+export default factories.createCoreController(table, ({ strapi }) => ({
+  // GET
+  async getTicketEvents(ctx) {
+    const { params } = ctx;
+    return await strapi.service(table).getTicketEvents({ params });
+  },
+}));

@@ -9,6 +9,7 @@ const populate: any = {
       "price",
       "isTable",
       "start_date",
+      "limit",
       "end_date",
     ],
     filters: {

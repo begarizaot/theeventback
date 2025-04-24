@@ -7,7 +7,9 @@
     "displayName": "EventTickets",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "title": {
       "type": "string"
@@ -43,6 +45,12 @@
       "relation": "manyToOne",
       "target": "api::event.event",
       "inversedBy": "event_tickets_ids"
+    },
+    "limit": {
+      "type": "integer"
+    },
+    "order": {
+      "type": "biginteger"
     }
   }
 }

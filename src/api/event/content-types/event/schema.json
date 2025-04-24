@@ -94,6 +94,9 @@
     },
     "urls_images_advertising": {
       "type": "json"
+    },
+    "url_map": {
+      "type": "string"
     }
   }
 }

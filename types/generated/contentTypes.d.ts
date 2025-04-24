@@ -550,12 +550,14 @@ export interface ApiEventTicketEventTicket extends Struct.CollectionTypeSchema {
     event_id: Schema.Attribute.Relation<'manyToOne', 'api::event.event'>;
     isTable: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    limit: Schema.Attribute.Integer;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::event-ticket.event-ticket'
     > &
       Schema.Attribute.Private;
+    order: Schema.Attribute.BigInteger;
     price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     quantity: Schema.Attribute.Integer;
@@ -625,6 +627,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     url_image: Schema.Attribute.String & Schema.Attribute.Required;
+    url_map: Schema.Attribute.String;
     url_youtube: Schema.Attribute.JSON;
     urls_images_advertising: Schema.Attribute.JSON;
   };

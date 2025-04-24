@@ -2,6 +2,25 @@
  * event-ticket service
  */
 
-import { factories } from '@strapi/strapi';
+import { factories } from "@strapi/strapi";
+import { EventFindMany } from "./services";
 
-export default factories.createCoreService('api::event-ticket.event-ticket');
+const table = "api::event-ticket.event-ticket";
+
+export default factories.createCoreService(table, () => ({
+  async getTicketEvents({ params }) {
+    try {
+      const service = await EventFindMany({
+        event_id: {
+          id_event: params.id,
+        },
+      });
+      return { data: service, status: true };
+    } catch (e) {
+      return {
+        status: false,
+        message: `${e?.message || ""}`,
+      };
+    }
+  },
+}));
