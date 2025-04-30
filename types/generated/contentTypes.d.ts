@@ -433,6 +433,44 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiEventDiscountCodeEventDiscountCode
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'event_discount_codes';
+  info: {
+    description: '';
+    displayName: 'EventDiscountCode';
+    pluralName: 'event-discount-codes';
+    singularName: 'event-discount-code';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    end_date: Schema.Attribute.DateTime;
+    event_id: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
+    isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::event-discount-code.event-discount-code'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    start_date: Schema.Attribute.DateTime;
+    state: Schema.Attribute.Enumeration<['val', 'por']>;
+    stock: Schema.Attribute.Integer;
+    stock_max: Schema.Attribute.Integer;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    value: Schema.Attribute.Decimal;
+  };
+}
+
 export interface ApiEventLocationEventLocation
   extends Struct.CollectionTypeSchema {
   collectionName: 'event_locations';
@@ -691,6 +729,115 @@ export interface ApiHomeHome extends Struct.SingleTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     url_image: Schema.Attribute.String;
+  };
+}
+
+export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
+  collectionName: 'orders';
+  info: {
+    displayName: 'Orders';
+    pluralName: 'orders';
+    singularName: 'order';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    base_price: Schema.Attribute.Decimal;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    event_discount_code_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::event-discount-code.event-discount-code'
+    >;
+    event_id: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
+    isRefundable: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
+      Schema.Attribute.Private;
+    order_id: Schema.Attribute.String;
+    price_refundable: Schema.Attribute.Decimal;
+    prices: Schema.Attribute.JSON;
+    publishedAt: Schema.Attribute.DateTime;
+    seat: Schema.Attribute.JSON;
+    state: Schema.Attribute.Enumeration<['Active', 'Cancel']> &
+      Schema.Attribute.DefaultTo<'Active'>;
+    stripe_id: Schema.Attribute.String;
+    tickets_id: Schema.Attribute.Relation<'manyToMany', 'api::ticket.ticket'>;
+    total_price: Schema.Attribute.Decimal;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    url_pdf: Schema.Attribute.String;
+    users_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiServiceFeeServiceFee extends Struct.SingleTypeSchema {
+  collectionName: 'service_fees';
+  info: {
+    description: '';
+    displayName: 'ServiceFee';
+    pluralName: 'service-fees';
+    singularName: 'service-fee';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    desiredProfit: Schema.Attribute.Decimal;
+    fixedFee: Schema.Attribute.Decimal;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::service-fee.service-fee'
+    > &
+      Schema.Attribute.Private;
+    percentageFee: Schema.Attribute.Decimal;
+    publishedAt: Schema.Attribute.DateTime;
+    refundable: Schema.Attribute.Decimal;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTicketTicket extends Struct.CollectionTypeSchema {
+  collectionName: 'tickets';
+  info: {
+    displayName: 'Tickets';
+    pluralName: 'tickets';
+    singularName: 'ticket';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    id_ticket: Schema.Attribute.String;
+    isScanner: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::ticket.ticket'
+    > &
+      Schema.Attribute.Private;
+    orders_id: Schema.Attribute.Relation<'manyToMany', 'api::order.order'>;
+    publishedAt: Schema.Attribute.DateTime;
+    scanner_date: Schema.Attribute.DateTime;
+    table: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1205,6 +1352,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::artist.artist': ApiArtistArtist;
       'api::category.category': ApiCategoryCategory;
+      'api::event-discount-code.event-discount-code': ApiEventDiscountCodeEventDiscountCode;
       'api::event-location.event-location': ApiEventLocationEventLocation;
       'api::event-restriction.event-restriction': ApiEventRestrictionEventRestriction;
       'api::event-status.event-status': ApiEventStatusEventStatus;
@@ -1212,6 +1360,9 @@ declare module '@strapi/strapi' {
       'api::event.event': ApiEventEvent;
       'api::global.global': ApiGlobalGlobal;
       'api::home.home': ApiHomeHome;
+      'api::order.order': ApiOrderOrder;
+      'api::service-fee.service-fee': ApiServiceFeeServiceFee;
+      'api::ticket.ticket': ApiTicketTicket;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

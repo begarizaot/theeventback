@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "service_fees",
+  "info": {
+    "singularName": "service-fee",
+    "pluralName": "service-fees",
+    "displayName": "ServiceFee",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "fixedFee": {
+      "type": "decimal"
+    },
+    "refundable": {
+      "type": "decimal"
+    },
+    "percentageFee": {
+      "type": "decimal"
+    },
+    "desiredProfit": {
+      "type": "decimal"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event_discount_codes",
+  "info": {
+    "singularName": "event-discount-code",
+    "pluralName": "event-discount-codes",
+    "displayName": "EventDiscountCode",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["val", "por"]
+    },
+    "value": {
+      "type": "decimal"
+    },
+    "stock": {
+      "type": "integer"
+    },
+    "stock_max": {
+      "type": "integer"
+    },
+    "start_date": {
+      "type": "datetime"
+    },
+    "end_date": {
+      "type": "datetime"
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    },
+    "event_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::event.event"
+    }
+  }
+}

@@ -7,9 +7,7 @@
     "displayName": "EventRestrictions",
     "description": ""
   },
-  "options": {
-    "draftAndPublish": false
-  },
+  "options": {},
   "attributes": {
     "title": {
       "type": "string"

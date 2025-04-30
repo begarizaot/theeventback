@@ -1,0 +1,66 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Orders"
+  },
+  "options": {},
+  "attributes": {
+    "order_id": {
+      "type": "string"
+    },
+    "stripe_id": {
+      "type": "string"
+    },
+    "total_price": {
+      "type": "decimal"
+    },
+    "base_price": {
+      "type": "decimal"
+    },
+    "url_pdf": {
+      "type": "string"
+    },
+    "seat": {
+      "type": "json"
+    },
+    "prices": {
+      "type": "json"
+    },
+    "price_refundable": {
+      "type": "decimal"
+    },
+    "isRefundable": {
+      "type": "boolean",
+      "default": false
+    },
+    "event_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::event.event"
+    },
+    "event_discount_code_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::event-discount-code.event-discount-code"
+    },
+    "users_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["Active", "Cancel"],
+      "default": "Active"
+    },
+    "tickets_id": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::ticket.ticket",
+      "mappedBy": "orders_id"
+    }
+  }
+}

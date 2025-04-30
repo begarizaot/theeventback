@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tickets",
+  "info": {
+    "singularName": "ticket",
+    "pluralName": "tickets",
+    "displayName": "Tickets"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "id_ticket": {
+      "type": "string"
+    },
+    "isScanner": {
+      "type": "boolean",
+      "default": false
+    },
+    "scanner_date": {
+      "type": "datetime"
+    },
+    "table": {
+      "type": "string"
+    },
+    "orders_id": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::order.order",
+      "inversedBy": "tickets_id"
+    }
+  }
+}

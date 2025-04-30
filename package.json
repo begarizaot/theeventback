@@ -15,8 +15,11 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
+    "@sendgrid/client": "^8.1.5",
+    "@sendgrid/mail": "^8.1.5",
     "@strapi/plugin-cloud": "5.12.5",
     "@strapi/plugin-users-permissions": "5.12.5",
+    "@strapi/provider-email-sendgrid": "^5.12.6",
     "@strapi/strapi": "5.12.5",
     "moment-timezone": "^0.5.48",
     "pg": "8.8.0",
