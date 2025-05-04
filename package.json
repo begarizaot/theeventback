@@ -21,11 +21,14 @@
     "@strapi/plugin-users-permissions": "5.12.5",
     "@strapi/provider-email-sendgrid": "^5.12.6",
     "@strapi/strapi": "5.12.5",
+    "crypto": "^1.0.1",
     "moment-timezone": "^0.5.48",
     "pg": "8.8.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
+    "seatsio": "^85.4.0",
+    "stripe": "^18.1.0",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {

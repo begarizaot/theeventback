@@ -1,11 +1,15 @@
 import { useMoment } from "../../../hooks";
 
-export const EventDiscountCodeFindOne = async (filters = {}, fields = null) => {
+export const EventDiscountCodeFindOne = async (
+  populate,
+  filters = {},
+  fields = null
+) => {
   return (
     await strapi.entityService.findMany(
       "api::event-discount-code.event-discount-code",
       {
-        populate: "*",
+        populate: populate || "*",
         filters: {
           ...filters,
           isVisible: true,
@@ -20,4 +24,21 @@ export const EventDiscountCodeFindOne = async (filters = {}, fields = null) => {
       }
     )
   )[0];
+};
+
+export const EventDiscountCodeUpdate = async (
+  idEventDiscountCode,
+  data = {},
+  populate?,
+  fields = null
+) => {
+  return await strapi.entityService.update(
+    "api::event-discount-code.event-discount-code",
+    idEventDiscountCode,
+    {
+      populate: populate || "*",
+      data: data,
+      fields: fields,
+    }
+  );
 };

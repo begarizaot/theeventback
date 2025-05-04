@@ -10,7 +10,7 @@ const table = "api::event-discount-code.event-discount-code";
 export default factories.createCoreService(table, () => ({
   async postEventsDiscountCode({ params, body }) {
     try {
-      const service = await EventDiscountCodeFindOne({
+      const service = await EventDiscountCodeFindOne(null, {
         event_id: {
           id_event: params.id,
         },

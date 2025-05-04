@@ -735,6 +735,7 @@ export interface ApiHomeHome extends Struct.SingleTypeSchema {
 export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
   collectionName: 'orders';
   info: {
+    description: '';
     displayName: 'Orders';
     pluralName: 'orders';
     singularName: 'order';
@@ -760,7 +761,6 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     price_refundable: Schema.Attribute.Decimal;
     prices: Schema.Attribute.JSON;
     publishedAt: Schema.Attribute.DateTime;
-    seat: Schema.Attribute.JSON;
     state: Schema.Attribute.Enumeration<['Active', 'Cancel']> &
       Schema.Attribute.DefaultTo<'Active'>;
     stripe_id: Schema.Attribute.String;
@@ -812,17 +812,22 @@ export interface ApiServiceFeeServiceFee extends Struct.SingleTypeSchema {
 export interface ApiTicketTicket extends Struct.CollectionTypeSchema {
   collectionName: 'tickets';
   info: {
+    description: '';
     displayName: 'Tickets';
     pluralName: 'tickets';
     singularName: 'ticket';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    event_ticket_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::event-ticket.event-ticket'
+    >;
     id_ticket: Schema.Attribute.String;
     isScanner: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -838,6 +843,7 @@ export interface ApiTicketTicket extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    value: Schema.Attribute.Decimal;
   };
 }
 
@@ -1296,7 +1302,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1310,6 +1315,8 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    firstName: Schema.Attribute.String;
+    lastName: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1321,6 +1328,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    phoneNumber: Schema.Attribute.String;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;

@@ -4,10 +4,11 @@
   "info": {
     "singularName": "ticket",
     "pluralName": "tickets",
-    "displayName": "Tickets"
+    "displayName": "Tickets",
+    "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "id_ticket": {
@@ -28,6 +29,14 @@
       "relation": "manyToMany",
       "target": "api::order.order",
       "inversedBy": "tickets_id"
+    },
+    "value": {
+      "type": "decimal"
+    },
+    "event_ticket_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::event-ticket.event-ticket"
     }
   }
 }

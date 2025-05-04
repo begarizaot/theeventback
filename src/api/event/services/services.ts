@@ -32,6 +32,7 @@ const populate: any = {
 };
 
 export const filterGeneral = {
+  isVisible: true,
   event_tickets_ids: {
     id: {
       $notNull: true,
