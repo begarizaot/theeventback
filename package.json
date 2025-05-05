@@ -15,6 +15,7 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.16.0",
     "@sendgrid/client": "^8.1.5",
     "@sendgrid/mail": "^8.1.5",
     "@strapi/plugin-cloud": "5.12.5",
@@ -22,7 +23,9 @@
     "@strapi/provider-email-sendgrid": "^5.12.6",
     "@strapi/strapi": "5.12.5",
     "crypto": "^1.0.1",
+    "image-to-base64": "^2.2.0",
     "moment-timezone": "^0.5.48",
+    "pdfmake": "^0.2.19",
     "pg": "8.8.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

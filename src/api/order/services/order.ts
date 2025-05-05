@@ -4,7 +4,9 @@
 
 import { factories } from "@strapi/strapi";
 import {
+  PdfOrder,
   useGeneral,
+  useGooglecCloud,
   useMoment,
   useSendGridClient,
   useSendGridMail,
@@ -41,77 +43,89 @@ const {
 } = useStripe();
 const { encrypt } = useCrypto();
 const { mailSend } = useSendGridMail();
+const { uploadPDF } = useGooglecCloud();
 
 const table = "api::order.order";
 export default factories.createCoreService(table, () => ({
   async getSendMail({ params }) {
-    const { orderId } = params;
-
-    const order = await OrderFindOne(
-      {
-        order_id: orderId,
-      },
-      {
-        event_id: {
-          populate: "*",
-        },
-        users_id: {
-          populate: "*",
-        },
-        tickets_id: {
-          populate: ["event_ticket_id"],
-        },
-      }
-    );
-
-    if (!order || !order.stripe_id) {
-      return {
-        status: false,
-        message: "Order not found or already paid",
-      };
-    }
-
-    const paymentInte = await retrievePaymentIntents(order.stripe_id);
-    if (!paymentInte?.status?.includes("succe")) {
-      return {
-        status: false,
-        data: paymentInte,
-        message: "Payment not found",
-      };
-    }
-
-    const { users_id, event_id, prices, tickets_id, url_pdf } = order as any;
-    const { event_locations_id: locations, event_restriction_id: restriction } =
-      event_id;
-
-    await mailSend({
-      email: users_id?.email || "",
-      templateId: process.env.SENDGRID_TEMPLATE_ORDER,
-      dynamicData: {
-        pdfUrl: url_pdf,
-        ticket_id: order?.order_id,
-        event: {
-          image: event_id?.url_image,
-          name: event_id?.name,
-          date: useMoment(event_id?.start_date).format("dddd, Do MMMM"),
-          time: `${useMoment(event_id?.start_date).format(
-            "HH:mm a"
-          )} - ${useMoment(event_id?.end_date).format("HH:mm a")}`,
-          location: locations.formatted_address,
-          restriction: restriction.title,
-        },
-        tickets: onGroupTickets(tickets_id),
-        refundable: (prices?.totalRefundable || 0).toFixed(2),
-        subTotal: (prices?.discountCode || prices?.subTotal || 0).toFixed(2),
-        serviceFees: (prices?.serviceFee || 0).toFixed(2),
-        proccessingFee: (prices?.processingFee || 0).toFixed(2),
-        total: (prices?.total || 0).toFixed(2),
-      },
-    });
-
     try {
+      const { orderId } = params;
+
+      const order = await OrderFindOne(
+        {
+          order_id: orderId,
+        },
+        {
+          event_id: {
+            populate: "*",
+          },
+          users_id: {
+            populate: "*",
+          },
+          tickets_id: {
+            populate: ["event_ticket_id"],
+          },
+        }
+      );
+
+      if (!order || !order.stripe_id) {
+        return {
+          status: false,
+          message: "Order not found or already paid",
+        };
+      }
+
+      const paymentInte = await retrievePaymentIntents(order.stripe_id);
+      if (!paymentInte?.status?.includes("succe")) {
+        return {
+          status: false,
+          data: paymentInte,
+          message: "Payment not found",
+        };
+      }
+
+      const { users_id, event_id, prices, tickets_id, url_pdf } = order as any;
+      const {
+        event_locations_id: locations,
+        event_restriction_id: restriction,
+      } = event_id;
+
+      let pdfUrl = url_pdf;
+      if (!url_pdf) {
+        const pdf = await PdfOrder(event_id, tickets_id);
+        pdfUrl = await uploadPDF(pdf, "order", `order_${orderId}`);
+        OrderUpdate(order.id, {
+          url_pdf: pdfUrl,
+        });
+      }
+
+      await mailSend({
+        email: users_id?.email || "",
+        templateId: process.env.SENDGRID_TEMPLATE_ORDER,
+        dynamicData: {
+          pdfUrl: pdfUrl,
+          ticket_id: order?.order_id,
+          event: {
+            image: event_id?.url_image,
+            name: event_id?.name,
+            date: useMoment(event_id?.start_date).format("dddd, Do MMMM"),
+            time: `${useMoment(event_id?.start_date).format(
+              "HH:mm a"
+            )} - ${useMoment(event_id?.end_date).format("HH:mm a")}`,
+            location: locations.formatted_address,
+            restriction: restriction.title,
+          },
+          tickets: onGroupTickets(tickets_id),
+          refundable: (prices?.totalRefundable || 0).toFixed(2),
+          subTotal: (prices?.discountCode || prices?.subTotal || 0).toFixed(2),
+          serviceFees: (prices?.serviceFee || 0).toFixed(2),
+          proccessingFee: (prices?.processingFee || 0).toFixed(2),
+          total: (prices?.total || 0).toFixed(2),
+        },
+      });
+
       return {
-        data: order,
+        message: "Email sent successfully",
         status: true,
       };
     } catch (error) {

@@ -1,3 +1,5 @@
+import imageToBase64 from "image-to-base64";
+
 export const useGeneral = () => {
   const getUniqueObjects = (array1, array2, key) => {
     const onlyInArray1 = array1.filter(
@@ -9,5 +11,11 @@ export const useGeneral = () => {
     return [...onlyInArray1, ...onlyInArray2];
   };
 
-  return { getUniqueObjects };
+  const imageURLBase64 = async (url) => {
+    if (!url) return "";
+    let base64Image = await imageToBase64(url || "");
+    return `data:image/png;base64,${base64Image || ""}`;
+  };
+
+  return { getUniqueObjects, imageURLBase64 };
 };
