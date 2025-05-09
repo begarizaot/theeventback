@@ -26,6 +26,20 @@ export interface LayoutHeader extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedCategory extends Struct.ComponentSchema {
+  collectionName: 'components_shared_categories';
+  info: {
+    displayName: 'Category';
+  };
+  attributes: {
+    category_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::category.category'
+    >;
+    isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
 export interface SharedColor extends Struct.ComponentSchema {
   collectionName: 'components_shared_colors';
   info: {
@@ -101,6 +115,7 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'layout.footer': LayoutFooter;
       'layout.header': LayoutHeader;
+      'shared.category': SharedCategory;
       'shared.color': SharedColor;
       'shared.events': SharedEvents;
       'shared.link': SharedLink;

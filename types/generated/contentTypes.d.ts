@@ -425,11 +425,42 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'title'>;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     url_image: Schema.Attribute.String;
+  };
+}
+
+export interface ApiCountryCountry extends Struct.CollectionTypeSchema {
+  collectionName: 'countries';
+  info: {
+    displayName: 'Countries';
+    pluralName: 'countries';
+    singularName: 'country';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    code: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    flag: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::country.country'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -668,6 +699,10 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     url_map: Schema.Attribute.String;
     url_youtube: Schema.Attribute.JSON;
     urls_images_advertising: Schema.Attribute.JSON;
+    users_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -715,6 +750,7 @@ export interface ApiHomeHome extends Struct.SingleTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    categories: Schema.Attribute.Component<'shared.category', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1307,6 +1343,7 @@ export interface PluginUsersPermissionsUser
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    country_id: Schema.Attribute.Relation<'oneToOne', 'api::country.country'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1316,6 +1353,7 @@ export interface PluginUsersPermissionsUser
         minLength: 6;
       }>;
     firstName: Schema.Attribute.String;
+    isOrganizer: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     lastName: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1360,6 +1398,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::artist.artist': ApiArtistArtist;
       'api::category.category': ApiCategoryCategory;
+      'api::country.country': ApiCountryCountry;
       'api::event-discount-code.event-discount-code': ApiEventDiscountCodeEventDiscountCode;
       'api::event-location.event-location': ApiEventLocationEventLocation;
       'api::event-restriction.event-restriction': ApiEventRestrictionEventRestriction;

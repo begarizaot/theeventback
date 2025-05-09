@@ -7,7 +7,9 @@
     "displayName": "Events",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "pluginOptions": {},
   "attributes": {
     "id_event": {
@@ -95,6 +97,11 @@
     },
     "url_map": {
       "type": "string"
+    },
+    "users_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }

@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_shared_categories",
+  "info": {
+    "displayName": "Category"
+  },
+  "options": {},
+  "attributes": {
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    },
+    "category_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::category.category"
+    }
+  }
+}

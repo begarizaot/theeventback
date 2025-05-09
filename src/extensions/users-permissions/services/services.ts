@@ -10,6 +10,14 @@ interface User {
   provider?: string;
 }
 
+const populateReq = {
+  country_id: {
+    fields: ["id", "name", "code", "flag"],
+  },
+};
+
+const fieldsReq: any = ["email", "firstName", "lastName", "phoneNumber"];
+
 export const validateUser = async (body: User) => {
   let userData: any = (
     await strapi.entityService.findMany("plugin::users-permissions.user", {
@@ -38,4 +46,49 @@ export const validateUser = async (body: User) => {
   }
 
   return userData;
+};
+
+export const UserFindOne = async (filters = {}, populate?) => {
+  return (
+    await strapi.entityService.findMany("plugin::users-permissions.user", {
+      populate: populate || populateReq || "*",
+      filters: {
+        ...filters,
+      },
+      fields: fieldsReq,
+    })
+  )[0];
+};
+
+export const UserUpdate = async (
+  id = null,
+  data = {},
+  populate?,
+  fields = null
+) => {
+  return await strapi.entityService.update(
+    "plugin::users-permissions.user",
+    id,
+    {
+      populate: populate || populateReq || "*",
+      data: data,
+      fields: fieldsReq,
+    }
+  );
+};
+
+export const UserCreate = async (dataRes: any = {}, populate?) => {
+  return await strapi.entityService.create("plugin::users-permissions.user", {
+    populate: populate || populateReq || "*",
+    data: {
+      ...dataRes,
+      username: dataRes.email,
+      confirmed: true,
+      publishedAt: new Date(),
+      role: {
+        id: 2,
+      },
+    },
+    fields: fieldsReq,
+  });
 };

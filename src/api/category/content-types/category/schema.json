@@ -7,7 +7,9 @@
     "displayName": "Categories",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "title": {
       "type": "string"
@@ -20,6 +22,10 @@
       "relation": "oneToMany",
       "target": "api::event.event",
       "mappedBy": "categories_id"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
     }
   }
 }

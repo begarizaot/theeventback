@@ -8,4 +8,31 @@ export default [
       auth: false,
     },
   },
+  {
+    method: "POST",
+    path: "/postLogin",
+    handler: "custom-user.postLogin",
+    config: {
+      policies: [],
+      auth: false,
+    },
+  },
+  {
+    method: "POST",
+    path: "/postValidateOTP",
+    handler: "custom-user.postValidateOTP",
+    config: {
+      policies: [],
+      auth: false,
+    },
+  },
+  {
+    method: "POST",
+    path: "/postRegister",
+    handler: "custom-user.postRegister",
+    config: {
+      policies: [],
+      auth: false,
+    },
+  },
 ];

@@ -73,6 +73,15 @@
     },
     "phoneNumber": {
       "type": "string"
+    },
+    "country_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::country.country"
+    },
+    "isOrganizer": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

@@ -1,8 +1,18 @@
-const populate:any = {
+const populate: any = {
   eventCarruselItem: {
     populate: {
       btn: true,
       event_id: true,
+    },
+  },
+  categories: {
+    populate: {
+      category_id: {
+        fields: ["id", "title", "url_image", "slug"],
+      },
+    },
+    filters: {
+      isVisible: true,
     },
   },
 };

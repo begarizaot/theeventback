@@ -376,9 +376,13 @@ export default factories.createCoreService(table, () => ({
         await bookSeats(eventData.url_map, allSeatIds);
       }
 
-      ticktsList.map((item) => {
-        TicketUpdate(item.id, { id_ticket: encrypt(`ticket_${item.id}`) });
-      });
+      await Promise.all(
+        ticktsList.map(async(item) => {
+          return await TicketUpdate(item.id, {
+            id_ticket: encrypt(`ticket_${item.id}`),
+          });
+        })
+      );
 
       tickets.map((item) => {
         EventTickettUpdate(item.id, { stock: item.stock - item.select });

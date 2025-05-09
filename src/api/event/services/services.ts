@@ -29,6 +29,14 @@ const populate: any = {
       isVisible: true,
     },
   },
+  users_id: {
+    populate: {
+      country_id: {
+        fields: ["id", "name", "code"],
+      },
+    },
+    fields: ["id", "phoneNumber", "email"],
+  },
 };
 
 export const filterGeneral = {
