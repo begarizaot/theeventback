@@ -7,7 +7,9 @@
     "displayName": "Global",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "header": {
       "type": "component",
@@ -28,6 +30,9 @@
       "type": "component",
       "repeatable": true,
       "component": "shared.color"
+    },
+    "url_image_logo": {
+      "type": "string"
     }
   }
 }

@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "admins",
+  "info": {
+    "singularName": "admin",
+    "pluralName": "admins",
+    "displayName": "Admin",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "Nav": {
+      "type": "component",
+      "repeatable": true,
+      "component": "layout.menu-admin"
+    }
+  }
+}

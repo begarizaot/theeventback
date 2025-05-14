@@ -27,6 +27,7 @@ import { useCrypto } from "../../../hooks/useCrypto";
 import {
   onGroupTickets,
   OrderCreate,
+  OrderFindMany,
   OrderFindOne,
   OrderUpdate,
 } from "./services";
@@ -126,6 +127,38 @@ export default factories.createCoreService(table, () => ({
 
       return {
         message: "Email sent successfully",
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
+  async getMyOrders({ user }) {
+    try {
+      const order = await OrderFindMany(
+        {
+          users_id: {
+            id: user.id,
+          },
+        },
+        {
+          event_id: {
+            populate: "*",
+          },
+          users_id: {
+            fields: ["id", "firstName", "lastName", "email", "phoneNumber"],
+          },
+          tickets_id: {
+            populate: ["event_ticket_id"],
+          },
+        }
+      );
+
+      return {
+        data: order,
         status: true,
       };
     } catch (error) {
@@ -377,7 +410,7 @@ export default factories.createCoreService(table, () => ({
       }
 
       await Promise.all(
-        ticktsList.map(async(item) => {
+        ticktsList.map(async (item) => {
           return await TicketUpdate(item.id, {
             id_ticket: encrypt(`ticket_${item.id}`),
           });

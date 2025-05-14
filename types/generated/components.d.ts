@@ -26,6 +26,24 @@ export interface LayoutHeader extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutMenuAdmin extends Struct.ComponentSchema {
+  collectionName: 'components_layout_menu_admins';
+  info: {
+    description: '';
+    displayName: 'MenuAdmin';
+  };
+  attributes: {
+    icon: Schema.Attribute.String;
+    isAll: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    name: Schema.Attribute.String;
+    path: Schema.Attribute.String;
+    type_role_ids: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::team-type-role.team-type-role'
+    >;
+  };
+}
+
 export interface SharedCategory extends Struct.ComponentSchema {
   collectionName: 'components_shared_categories';
   info: {
@@ -115,6 +133,7 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'layout.footer': LayoutFooter;
       'layout.header': LayoutHeader;
+      'layout.menu-admin': LayoutMenuAdmin;
       'shared.category': SharedCategory;
       'shared.color': SharedColor;
       'shared.events': SharedEvents;

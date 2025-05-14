@@ -11,6 +11,12 @@ export default factories.createCoreController(table, ({ strapi }) => ({
     const { params } = ctx;
     return await strapi.service(table).getSendMail({ params });
   },
+  async getMyOrders(ctx) {
+    const {
+      state: { user },
+    } = ctx;
+    return await strapi.service(table).getMyOrders({ user });
+  },
   async postCreatePayment(ctx) {
     const {
       request: { body },

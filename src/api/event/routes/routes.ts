@@ -24,5 +24,15 @@ module.exports = {
         auth: false,
       },
     },
+    {
+      method: "GET",
+      path: "/event/getMyEvents",
+      handler: "event.getMyEvents",
+    },
+    {
+      method: "GET",
+      path: "/event/getSharedEvents",
+      handler: "event.getSharedEvents",
+    },
   ],
 };

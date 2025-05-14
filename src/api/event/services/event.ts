@@ -3,7 +3,13 @@
  */
 
 import { factories } from "@strapi/strapi";
-import { EventFindOne, EventFindPage, filterGeneral } from "./services";
+import {
+  EventFindMany,
+  EventFindOne,
+  EventFindPage,
+  filterGeneral,
+} from "./services";
+import { TeamAccessFindMany } from "../../team-access/services/services";
 
 const table = "api::event.event";
 
@@ -52,6 +58,47 @@ export default factories.createCoreService(table, () => ({
           title: service.name ?? "",
           urlImage: service.url_image ?? "",
         },
+        status: true,
+      };
+    } catch (e) {
+      return {
+        status: false,
+        message: `${e?.message || ""}`,
+      };
+    }
+  },
+  async getMyEvents({ user }) {
+    try {
+      const service = await EventFindMany(
+        {
+          users_id: {
+            id: user.id,
+          },
+        },
+        {
+          start_date: "asc",
+        }
+      );
+      return {
+        data: service,
+        status: true,
+      };
+    } catch (e) {
+      return {
+        status: false,
+        message: `${e?.message || ""}`,
+      };
+    }
+  },
+  async getSharedEvents({ user }) {
+    try {
+      const service = await TeamAccessFindMany({
+        user_id: {
+          id: user.id,
+        },
+      });
+      return {
+        data: service,
         status: true,
       };
     } catch (e) {

@@ -9,6 +9,11 @@ module.exports = {
       },
     },
     {
+      method: "GET",
+      path: "/order/getMyOrders",
+      handler: "order.getMyOrders",
+    },
+    {
       method: "POST",
       path: "/order/postCreatePayment",
       handler: "order.postCreatePayment",

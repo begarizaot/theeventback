@@ -8,9 +8,7 @@
     "pluralName": "users",
     "displayName": "User"
   },
-  "options": {
-    "draftAndPublish": false
-  },
+  "options": {},
   "attributes": {
     "username": {
       "type": "string",

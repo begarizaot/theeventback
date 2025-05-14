@@ -84,6 +84,19 @@ export const EventFindPage = async (
   });
 };
 
+export const EventFindMany = async (
+  filters = {},
+  sort = {}
+) => {
+  return await strapi.entityService.findMany("api::event.event", {
+    populate: populate,
+    filters: {
+      ...filters,
+    },
+    sort: sort,
+  });
+};
+
 export const EventFindOne = async (
   populateRes = null,
   filters = {},
