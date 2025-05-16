@@ -7,9 +7,7 @@
     "displayName": "Tickets",
     "description": ""
   },
-  "options": {
-    
-  },
+  "options": {},
   "attributes": {
     "id_ticket": {
       "type": "string"

@@ -8,7 +8,7 @@
     "description": ""
   },
   "options": {
-    
+    "draftAndPublish": false
   },
   "attributes": {
     "order_id": {
@@ -64,6 +64,9 @@
       "relation": "manyToMany",
       "target": "api::ticket.ticket",
       "mappedBy": "orders_id"
+    },
+    "discount_price": {
+      "type": "decimal"
     }
   }
 }

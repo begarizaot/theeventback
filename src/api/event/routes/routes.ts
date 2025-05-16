@@ -34,5 +34,16 @@ module.exports = {
       path: "/event/getSharedEvents",
       handler: "event.getSharedEvents",
     },
+    // *admin
+    {
+      method: "GET",
+      path: "/event/getAdminEventDetail/:id",
+      handler: "event.getAdminEventDetail",
+    },
+    {
+      method: "GET",
+      path: "/event/getAdminEventAnality/:id",
+      handler: "event.getAdminEventAnality",
+    },
   ],
 };

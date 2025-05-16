@@ -60,3 +60,138 @@ export const OrderUpdate = async (
     fields: fields,
   });
 };
+
+export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
+  const orders = await strapi.entityService.findMany("api::order.order", {
+    filters: {
+      event_id: {
+        id: eventId,
+      },
+    },
+    populate: {
+      tickets_id: {
+        populate: ["event_ticket_id"],
+      },
+    },
+    fields: ["base_price", "discount_price"],
+  });
+
+  const createGroupStructure = () => ({
+    totalValue: 0,
+    totalQuantity: 0,
+    ticketMap: {},
+  });
+
+  const groups = {
+    eventSales: createGroupStructure(),
+    tableSales: createGroupStructure(),
+    ticketSales: createGroupStructure(),
+    ticketComp: createGroupStructure(),
+  };
+
+  let totalBasePrice = 0;
+  let totalTickets = 0;
+  let totalScanned = 0;
+
+  let totalDiscountValue = 0;
+  let totalDiscountQuantity = 0;
+
+  const addToGroup = (group, ticket) => {
+    const ticketId = ticket.event_ticket_id?.id;
+    if (!ticketId) return;
+
+    if (!group.ticketMap[ticketId]) {
+      group.ticketMap[ticketId] = {
+        ticketId,
+        title: ticket.event_ticket_id.title,
+        quantity: 0,
+        totalValue: 0,
+      };
+    }
+
+    group.ticketMap[ticketId].quantity += 1;
+    group.ticketMap[ticketId].totalValue += ticket.value || 0;
+    group.totalQuantity += 1;
+    group.totalValue += ticket.value || 0;
+  };
+
+  orders.forEach((order: any) => {
+    const discount = order.discount_price || 0;
+    if (discount > 0) {
+      totalDiscountValue += discount;
+      totalDiscountQuantity += 1;
+    }
+
+    totalBasePrice += order.base_price || 0;
+
+    order.tickets_id?.forEach((ticket: any) => {
+      const value = ticket.value || 0;
+      const hasTable = ticket?.table;
+      const isScanned = ticket.isScanner === true;
+
+      totalTickets += 1;
+      if (isScanned) totalScanned += 1;
+
+      addToGroup(groups.eventSales, ticket);
+
+      if (!value || value === 0) {
+        addToGroup(groups.ticketComp, ticket);
+      } else if (hasTable) {
+        addToGroup(groups.tableSales, ticket);
+      } else {
+        addToGroup(groups.ticketSales, ticket);
+      }
+    });
+  });
+
+  const formatGroup = (group) => ({
+    totalQuantity: group.totalQuantity,
+    totalValue: group.totalValue.toFixed(2),
+    ticketsGrouped: Object.values(group.ticketMap).map((item: any) => ({
+      ticketId: item.ticketId,
+      title: item.title,
+      quantity: item.quantity,
+      totalValue: item.totalValue.toFixed(2),
+    })),
+  });
+
+  const scanStats = {
+    totalTickets,
+    totalScanned,
+    percentageScanned:
+      totalTickets > 0 ? ((totalScanned / totalTickets) * 100).toFixed(0) : "0",
+  };
+
+  const eventSalesFormatted = {
+    totalBasePrice: totalBasePrice.toFixed(2),
+    ...formatGroup(groups.eventSales),
+    ticketData: [
+      {
+        type: "Ticket Sales",
+        ...formatGroup(groups.ticketSales),
+      },
+      ...(showTable
+        ? [
+            {
+              type: "Table Sales",
+              ...formatGroup(groups.tableSales),
+            },
+          ]
+        : []),
+      {
+        type: "Ticket Comp",
+        ...formatGroup(groups.ticketComp),
+      },
+      {
+        type: "Discounts",
+        totalQuantity: totalDiscountQuantity,
+        totalValue: totalDiscountValue.toFixed(2),
+      },
+    ],
+  };
+
+  return {
+    eventSales: eventSalesFormatted,
+    scanStats,
+  };
+};

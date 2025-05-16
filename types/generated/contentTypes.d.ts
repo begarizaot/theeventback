@@ -811,6 +811,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    discount_price: Schema.Attribute.Decimal;
     event_discount_code_id: Schema.Attribute.Relation<
       'oneToOne',
       'api::event-discount-code.event-discount-code'

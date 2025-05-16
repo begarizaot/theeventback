@@ -343,7 +343,10 @@ export default factories.createCoreService(table, () => ({
       const order = await OrderCreate({
         stripe_id: payment.id,
         total_price: values.total,
-        base_price: values.discountCode || values.subTotal,
+        base_price: values.subTotal,
+        service_fee: values.discountCode
+          ? Number(values.subTotal) - Number(values.discountCode)
+          : 0,
         prices: values || {},
         price_refundable: values.totalRefundable || 0,
         event_id: eventData?.id,

@@ -31,7 +31,7 @@ export const TeamAccessFindMany = async (filters = {}, sort = {}) => {
   });
 };
 
-export const TeamAccessFindOne = async (filters = {}, populate?) => {
+export const TeamAccessFindOne = async (filters = {}) => {
   return (
     await strapi.entityService.findMany("api::team-access.team-access", {
       populate: populate || "*",

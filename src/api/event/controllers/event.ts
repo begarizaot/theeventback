@@ -30,4 +30,18 @@ export default factories.createCoreController(table, ({ strapi }) => ({
     } = ctx;
     return await strapi.service(table).getSharedEvents({ user });
   },
+  async getAdminEventDetail(ctx) {
+    const {
+      params,
+      state: { user },
+    } = ctx;
+    return await strapi.service(table).getAdminEventDetail({ params, user });
+  },
+  async getAdminEventAnality(ctx) {
+    const {
+      params,
+      state: { user },
+    } = ctx;
+    return await strapi.service(table).getAdminEventAnality({ params, user });
+  },
 }));
