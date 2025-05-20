@@ -17,6 +17,21 @@ export default factories.createCoreController(table, ({ strapi }) => ({
     } = ctx;
     return await strapi.service(table).getMyOrders({ user });
   },
+  async getAllOrders(ctx) {
+    const {
+      state: { user },
+      params,
+      request: { query },
+    } = ctx;
+    return await strapi.service(table).getAllOrders({ user, params, query });
+  },
+  async getRefundOrder(ctx) {
+    const {
+      state: { user },
+      params,
+    } = ctx;
+    return await strapi.service(table).getRefundOrder({ user, params });
+  },
   async postCreatePayment(ctx) {
     const {
       request: { body },

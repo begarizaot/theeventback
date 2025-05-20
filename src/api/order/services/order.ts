@@ -29,6 +29,7 @@ import {
   OrderCreate,
   OrderFindMany,
   OrderFindOne,
+  OrderFindPage,
   OrderUpdate,
 } from "./services";
 import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
@@ -39,6 +40,7 @@ const { validateReserveSeats, bookSeats } = useSeats();
 const {
   createPaymentMethod,
   createPaymentIntents,
+  createRefund,
   updatePaymentIntents,
   retrievePaymentIntents,
 } = useStripe();
@@ -159,6 +161,154 @@ export default factories.createCoreService(table, () => ({
 
       return {
         data: order,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
+  async getAllOrders({ user, params, query }) {
+    if (!user) {
+      return {
+        status: false,
+        message: "User not found",
+      };
+    }
+    const eventData: any = await EventFindOne(
+      null,
+      {
+        id_event: params.eventId,
+      },
+      ["id"]
+    );
+
+    if (!eventData) {
+      return {
+        status: false,
+        message: "Event not found",
+      };
+    }
+
+    // if (user.id != eventData?.users_id.id) {
+    //   return {
+    //     status: false,
+    //     message: "You are not the owner of this event",
+    //   };
+    // }
+
+    const { search, page, size, total, date } = query;
+
+    try {
+      const order = await OrderFindPage(
+        {
+          ...(search?.length > 2 && {
+            $or: [
+              { users_id: { email: { $containsi: search || "" } } },
+              { users_id: { firstName: { $containsi: search || "" } } },
+              { users_id: { lastName: { $containsi: search || "" } } },
+              { users_id: { phoneNumber: { $containsi: search || "" } } },
+            ],
+          }),
+        },
+        {
+          event_id: {
+            populate: "*",
+          },
+          users_id: {
+            populate: {
+              country_id: {
+                fields: ["code"],
+              },
+            },
+            fields: ["id", "firstName", "lastName", "email", "phoneNumber"],
+          },
+          tickets_id: {
+            populate: ["event_ticket_id"],
+          },
+          event_discount_code_id: {
+            fields: ["name"],
+          },
+        },
+        {
+          page: page || 1,
+          pageSize: size || 10,
+        }
+      );
+
+      return {
+        data: order.results,
+        pagination: order.pagination,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
+  async getRefundOrder({ user, params }) {
+    try {
+      if (!user) {
+        return {
+          status: false,
+          message: "User not found",
+        };
+      }
+      const eventData: any = await EventFindOne(
+        null,
+        {
+          id_event: params.eventId,
+        },
+        ["id"]
+      );
+
+      if (!eventData) {
+        return {
+          status: false,
+          message: "Event not found",
+        };
+      }
+
+      if (user.id != eventData?.users_id.id) {
+        return {
+          status: false,
+          message: "You are not the owner of this event",
+        };
+      }
+
+      const orderData = await OrderFindOne({ order_id: params.orderId });
+
+      if (!orderData) {
+        return {
+          status: false,
+          message: "Order not found",
+        };
+      }
+
+      if (orderData?.isRefundable) {
+        return {
+          status: false,
+          message: "The order has already been refunded",
+        };
+      }
+
+      const refund = await createRefund({
+        paymentIntentId: orderData.stripe_id,
+        amount: orderData.base_price,
+      });
+
+      if (refund.status == "succeeded") {
+        await OrderUpdate(orderData.id, {
+          isRefundable: true,
+        });
+      }
+
+      return {
+        data: refund.status,
         status: true,
       };
     } catch (error) {

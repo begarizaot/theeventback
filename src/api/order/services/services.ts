@@ -40,6 +40,25 @@ export const OrderFindMany = async (filters = {}, populate?) => {
   });
 };
 
+export const OrderFindPage = async (
+  filters = {},
+  populate?,
+  sizePage = {
+    page: 1,
+    pageSize: 10,
+  },
+  sort = {}
+) => {
+  return await strapi.entityService.findPage("api::order.order", {
+    populate: populate || "*",
+    filters: {
+      ...filters,
+    },
+    ...sizePage,
+    sort,
+  });
+};
+
 export const OrderCreate = async (data = {}, populate?, fields = null) => {
   return await strapi.entityService.create("api::order.order", {
     populate: populate || "*",
@@ -73,7 +92,7 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
         populate: ["event_ticket_id"],
       },
     },
-    fields: ["base_price", "discount_price"],
+    fields: ["base_price", "discount_price", "isRefundable"],
   });
 
   const createGroupStructure = () => ({
@@ -116,32 +135,34 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
   };
 
   orders.forEach((order: any) => {
-    const discount = order.discount_price || 0;
-    if (discount > 0) {
-      totalDiscountValue += discount;
-      totalDiscountQuantity += 1;
-    }
-
-    totalBasePrice += order.base_price || 0;
-
-    order.tickets_id?.forEach((ticket: any) => {
-      const value = ticket.value || 0;
-      const hasTable = ticket?.table;
-      const isScanned = ticket.isScanner === true;
-
-      totalTickets += 1;
-      if (isScanned) totalScanned += 1;
-
-      addToGroup(groups.eventSales, ticket);
-
-      if (!value || value === 0) {
-        addToGroup(groups.ticketComp, ticket);
-      } else if (hasTable) {
-        addToGroup(groups.tableSales, ticket);
-      } else {
-        addToGroup(groups.ticketSales, ticket);
+    if (!order.isRefundable) {
+      const discount = order.discount_price || 0;
+      if (discount > 0) {
+        totalDiscountValue += discount;
+        totalDiscountQuantity += 1;
       }
-    });
+
+      totalBasePrice += order.base_price - Number(discount || 0) || 0;
+
+      order.tickets_id?.forEach((ticket: any) => {
+        const value = ticket.value || 0;
+        const hasTable = ticket?.table;
+        const isScanned = ticket.isScanner === true;
+
+        totalTickets += 1;
+        if (isScanned) totalScanned += 1;
+
+        addToGroup(groups.eventSales, ticket);
+
+        if (!value || value === 0) {
+          addToGroup(groups.ticketComp, ticket);
+        } else if (hasTable) {
+          addToGroup(groups.tableSales, ticket);
+        } else {
+          addToGroup(groups.ticketSales, ticket);
+        }
+      });
+    }
   });
 
   const formatGroup = (group) => ({

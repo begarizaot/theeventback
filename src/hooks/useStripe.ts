@@ -72,9 +72,23 @@ export const useStripe = () => {
     return customer.id;
   };
 
+  // Refund
+  const createRefund = async ({ paymentIntentId, amount }) => {
+    const refund = await stripe.refunds.create({
+      payment_intent: paymentIntentId,
+      amount: amount
+        ? Number((parseFloat(amount) * 100).toFixed(0))
+        : undefined,
+      reason: "requested_by_customer", // puede ser 'duplicate', 'fraudulent', o 'requested_by_customer'
+    });
+
+    return refund;
+  };
+
   return {
     createPaymentMethod,
     createPaymentIntents,
+    createRefund,
     updatePaymentIntents,
     retrievePaymentIntents,
   };

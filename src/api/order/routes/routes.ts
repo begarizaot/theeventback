@@ -14,6 +14,16 @@ module.exports = {
       handler: "order.getMyOrders",
     },
     {
+      method: "GET",
+      path: "/order/getAllOrders/:eventId",
+      handler: "order.getAllOrders",
+    },
+    {
+      method: "GET",
+      path: "/order/getRefundOrder/:eventId/:orderId",
+      handler: "order.getRefundOrder",
+    },
+    {
       method: "POST",
       path: "/order/postCreatePayment",
       handler: "order.postCreatePayment",
