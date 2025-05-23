@@ -32,16 +32,18 @@ export default factories.createCoreService(table, () => ({
         Nav: {
           populate: "*",
           filters: {
-            $or: [
-              {
-                type_role_ids: {
-                  id: !userAdmin ? team.type_role_id.id : 3,
+            menu: {
+              $or: [
+                {
+                  type_roles_ids: {
+                    id: !userAdmin ? team.type_role_id.id : 3,
+                  },
                 },
-              },
-              {
-                isAll: true,
-              },
-            ],
+                {
+                  isAll: true,
+                },
+              ],
+            },
           },
         },
       });

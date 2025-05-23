@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_shared_menu_admins",
+  "info": {
+    "displayName": "MenuAdmin"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "string"
+    },
+    "isAll": {
+      "type": "boolean",
+      "default": true
+    },
+    "type_roles_ids": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team-type-role.team-type-role"
+    }
+  }
+}

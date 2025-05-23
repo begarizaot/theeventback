@@ -48,6 +48,42 @@ const { encrypt } = useCrypto();
 const { mailSend } = useSendGridMail();
 const { uploadPDF } = useGooglecCloud();
 
+const onValidateData = async (user: any, eventId: any) => {
+  if (!user) {
+    return {
+      status: false,
+      message: "User not found",
+    };
+  }
+  const eventData: any = await EventFindOne(
+    null,
+    {
+      id_event: eventId,
+    },
+    ["id"]
+  );
+
+  if (!eventData) {
+    return {
+      status: false,
+      message: "Event not found",
+    };
+  }
+
+  //   if (user.id != eventData?.users_id.id) {
+  //     return {
+  //       status: false,
+  //       message: "You are not the owner of this event",
+  //     };
+  //   }
+
+  return {
+    status: true,
+    data: eventData,
+  };
+};
+
+
 const table = "api::order.order";
 export default factories.createCoreService(table, () => ({
   async getSendMail({ params }) {
@@ -171,33 +207,14 @@ export default factories.createCoreService(table, () => ({
     }
   },
   async getAllOrders({ user, params, query }) {
-    if (!user) {
+    const eventData: any = await onValidateData(user, params.eventId);
+
+    if (!eventData?.status) {
       return {
         status: false,
-        message: "User not found",
+        message: eventData?.message,
       };
     }
-    const eventData: any = await EventFindOne(
-      null,
-      {
-        id_event: params.eventId,
-      },
-      ["id"]
-    );
-
-    if (!eventData) {
-      return {
-        status: false,
-        message: "Event not found",
-      };
-    }
-
-    // if (user.id != eventData?.users_id.id) {
-    //   return {
-    //     status: false,
-    //     message: "You are not the owner of this event",
-    //   };
-    // }
 
     const { search, page, size, total, date } = query;
 
@@ -252,31 +269,12 @@ export default factories.createCoreService(table, () => ({
   },
   async getRefundOrder({ user, params }) {
     try {
-      if (!user) {
-        return {
-          status: false,
-          message: "User not found",
-        };
-      }
-      const eventData: any = await EventFindOne(
-        null,
-        {
-          id_event: params.eventId,
-        },
-        ["id"]
-      );
+      const eventData: any = await onValidateData(user, params.eventId);
 
-      if (!eventData) {
+      if (!eventData?.status) {
         return {
           status: false,
-          message: "Event not found",
-        };
-      }
-
-      if (user.id != eventData?.users_id.id) {
-        return {
-          status: false,
-          message: "You are not the owner of this event",
+          message: eventData?.message,
         };
       }
 

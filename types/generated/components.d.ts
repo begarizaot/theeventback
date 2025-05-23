@@ -33,14 +33,8 @@ export interface LayoutMenuAdmin extends Struct.ComponentSchema {
     displayName: 'MenuAdmin';
   };
   attributes: {
-    icon: Schema.Attribute.String;
-    isAll: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    name: Schema.Attribute.String;
-    path: Schema.Attribute.String;
-    type_role_ids: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::team-type-role.team-type-role'
-    >;
+    menu: Schema.Attribute.Component<'shared.menu-admin', false>;
+    menuItems: Schema.Attribute.Component<'shared.menu-admin', true>;
   };
 }
 
@@ -113,6 +107,23 @@ export interface SharedLogoLink extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedMenuAdmin extends Struct.ComponentSchema {
+  collectionName: 'components_shared_menu_admins';
+  info: {
+    displayName: 'MenuAdmin';
+  };
+  attributes: {
+    icon: Schema.Attribute.String;
+    isAll: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    name: Schema.Attribute.String;
+    path: Schema.Attribute.String;
+    type_roles_ids: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::team-type-role.team-type-role'
+    >;
+  };
+}
+
 export interface SharedMeta extends Struct.ComponentSchema {
   collectionName: 'components_shared_metas';
   info: {
@@ -139,6 +150,7 @@ declare module '@strapi/strapi' {
       'shared.events': SharedEvents;
       'shared.link': SharedLink;
       'shared.logo-link': SharedLogoLink;
+      'shared.menu-admin': SharedMenuAdmin;
       'shared.meta': SharedMeta;
     }
   }

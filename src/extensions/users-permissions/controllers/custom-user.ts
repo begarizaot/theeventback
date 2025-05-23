@@ -32,9 +32,12 @@ export default {
         };
       }
 
+      const userData: any = await UserFindOne({ email: { $eqi: email || "" } });
+
       return {
         status: true,
         message: "",
+        data: userData,
       };
     } catch (error) {
       return {

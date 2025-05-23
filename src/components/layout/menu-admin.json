@@ -6,23 +6,15 @@
   },
   "options": {},
   "attributes": {
-    "name": {
-      "type": "string"
+    "menu": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.menu-admin"
     },
-    "path": {
-      "type": "string"
-    },
-    "icon": {
-      "type": "string"
-    },
-    "isAll": {
-      "type": "boolean",
-      "default": false
-    },
-    "type_role_ids": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::team-type-role.team-type-role"
+    "menuItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.menu-admin"
     }
   }
 }
