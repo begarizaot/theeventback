@@ -519,7 +519,7 @@ export interface ApiEventDiscountCodeEventDiscountCode
     publishedAt: Schema.Attribute.DateTime;
     start_date: Schema.Attribute.DateTime;
     state: Schema.Attribute.Enumeration<['val', 'por']>;
-    stock: Schema.Attribute.Integer;
+    stock: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     stock_max: Schema.Attribute.Integer;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

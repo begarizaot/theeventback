@@ -7,20 +7,26 @@
     "displayName": "EventDiscountCode",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "name": {
       "type": "string"
     },
     "state": {
       "type": "enumeration",
-      "enum": ["val", "por"]
+      "enum": [
+        "val",
+        "por"
+      ]
     },
     "value": {
       "type": "decimal"
     },
     "stock": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "stock_max": {
       "type": "integer"
