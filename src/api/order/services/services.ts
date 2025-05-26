@@ -92,7 +92,13 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
         populate: ["event_ticket_id"],
       },
     },
-    fields: ["base_price", "discount_price", "isRefundable"],
+    fields: [
+      "base_price",
+      "discount_price",
+      "isRefundable",
+      "freeOrder",
+      "order_id",
+    ],
   });
 
   const createGroupStructure = () => ({
@@ -135,7 +141,7 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
   };
 
   orders.forEach((order: any) => {
-    if (!order.isRefundable) {
+    if (!order.isRefundable && !order.freeOrder) {
       const discount = order.discount_price || 0;
       if (discount > 0) {
         totalDiscountValue += discount;

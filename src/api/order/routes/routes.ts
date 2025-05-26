@@ -15,8 +15,18 @@ module.exports = {
     },
     {
       method: "GET",
+      path: "/order/getAllOrdersList/:eventId",
+      handler: "order.getAllOrdersList",
+    },
+    {
+      method: "GET",
       path: "/order/getAllOrders/:eventId",
       handler: "order.getAllOrders",
+    },
+    {
+      method: "GET",
+      path: "/order/getAllOrdersFree/:eventId",
+      handler: "order.getAllOrdersFree",
     },
     {
       method: "GET",
@@ -33,11 +43,21 @@ module.exports = {
     },
     {
       method: "POST",
+      path: "/order/postCreatePaymentFree",
+      handler: "order.postCreatePaymentFree",
+    },
+    {
+      method: "POST",
       path: "/order/postCreateOrder",
       handler: "order.postCreateOrder",
       config: {
         auth: false,
       },
+    },
+    {
+      method: "POST",
+      path: "/order/postCreateOrderFree",
+      handler: "order.postCreateOrderFree",
     },
   ],
 };

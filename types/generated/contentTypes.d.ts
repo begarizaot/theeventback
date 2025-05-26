@@ -817,6 +817,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       'api::event-discount-code.event-discount-code'
     >;
     event_id: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
+    freeOrder: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     isRefundable: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &

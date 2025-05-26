@@ -83,6 +83,56 @@ const onValidateData = async (user: any, eventId: any) => {
   };
 };
 
+const onValidateTicket = async (eventData: any, tickets: any) => {
+  if (!eventData.url_map) {
+    let listTickets = (
+      (await Promise.all(
+        tickets?.map(async (ticket) => {
+          return await EventTicketFindOne({
+            id: ticket.id,
+            stock: {
+              $gt: 0,
+              $gte: ticket.select,
+            },
+          });
+        })
+      )) || []
+    ).filter((ticket) => ticket);
+
+    if (listTickets?.length < tickets?.length) {
+      return {
+        status: false,
+        message: `${getUniqueObjects(listTickets, tickets, "id")
+          .map((obj) => obj.title)
+          .join(", ")} ticket sold out`,
+      };
+    }
+  } else {
+    const allSeatIds = tickets.flatMap((item) => {
+      if (item.isTable) {
+        return item.seatId;
+      } else {
+        return Array(item.select).fill(item.seatId[0]);
+      }
+    });
+
+    const reserveMap = await validateReserveSeats(
+      eventData.url_map,
+      allSeatIds
+    );
+
+    if (!reserveMap.status) {
+      return {
+        status: false,
+        message: reserveMap.message,
+      };
+    }
+  }
+
+  return {
+    status: true,
+  };
+};
 
 const table = "api::order.order";
 export default factories.createCoreService(table, () => ({
@@ -107,20 +157,22 @@ export default factories.createCoreService(table, () => ({
         }
       );
 
-      if (!order || !order.stripe_id) {
+      if ((!order || !order.stripe_id) && !order.freeOrder) {
         return {
           status: false,
           message: "Order not found or already paid",
         };
       }
 
-      const paymentInte = await retrievePaymentIntents(order.stripe_id);
-      if (!paymentInte?.status?.includes("succe")) {
-        return {
-          status: false,
-          data: paymentInte,
-          message: "Payment not found",
-        };
+      if (!order.freeOrder) {
+        const paymentInte = await retrievePaymentIntents(order?.stripe_id);
+        if (!paymentInte?.status?.includes("succe")) {
+          return {
+            status: false,
+            data: paymentInte,
+            message: "Payment not found",
+          };
+        }
       }
 
       const { users_id, event_id, prices, tickets_id, url_pdf } = order as any;
@@ -206,6 +258,56 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
+  async getAllOrdersList({ user, params }) {
+    const eventData: any = await onValidateData(user, params.eventId);
+
+    if (!eventData?.status) {
+      return {
+        status: false,
+        message: eventData?.message,
+      };
+    }
+
+    try {
+      const order = await OrderFindMany(
+        {
+          $or: [
+            { isRefundable: { $eq: false } },
+            { isRefundable: { $null: true } },
+          ],
+        },
+        {
+          event_id: {
+            populate: "*",
+          },
+          users_id: {
+            populate: {
+              country_id: {
+                fields: ["code"],
+              },
+            },
+            fields: ["id", "firstName", "lastName", "email", "phoneNumber"],
+          },
+          tickets_id: {
+            populate: ["event_ticket_id"],
+          },
+          event_discount_code_id: {
+            fields: ["name"],
+          },
+        }
+      );
+
+      return {
+        data: order,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
   async getAllOrders({ user, params, query }) {
     const eventData: any = await onValidateData(user, params.eventId);
 
@@ -216,11 +318,74 @@ export default factories.createCoreService(table, () => ({
       };
     }
 
-    const { search, page, size, total, date } = query;
+    const { search, page, size } = query;
 
     try {
       const order = await OrderFindPage(
         {
+          $or: [{ freeOrder: { $eq: false } }, { freeOrder: { $null: true } }],
+          ...(search?.length > 2 && {
+            $or: [
+              { users_id: { email: { $containsi: search || "" } } },
+              { users_id: { firstName: { $containsi: search || "" } } },
+              { users_id: { lastName: { $containsi: search || "" } } },
+              { users_id: { phoneNumber: { $containsi: search || "" } } },
+            ],
+          }),
+        },
+        {
+          event_id: {
+            populate: "*",
+          },
+          users_id: {
+            populate: {
+              country_id: {
+                fields: ["code"],
+              },
+            },
+            fields: ["id", "firstName", "lastName", "email", "phoneNumber"],
+          },
+          tickets_id: {
+            populate: ["event_ticket_id"],
+          },
+          event_discount_code_id: {
+            fields: ["name"],
+          },
+        },
+        {
+          page: page || 1,
+          pageSize: size || 10,
+        }
+      );
+
+      return {
+        data: order.results,
+        pagination: order.pagination,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
+  async getAllOrdersFree({ user, params, query }) {
+    const eventData: any = await onValidateData(user, params.eventId);
+
+    if (!eventData?.status) {
+      return {
+        status: false,
+        message: eventData?.message,
+      };
+    }
+
+    const { search, page, size } = query;
+
+    try {
+      const order = await OrderFindPage(
+        {
+          freeOrder: true,
           ...(search?.length > 2 && {
             $or: [
               { users_id: { email: { $containsi: search || "" } } },
@@ -346,49 +511,13 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      if (!eventData.url_map) {
-        let listTickets = (
-          (await Promise.all(
-            tickets?.map(async (ticket) => {
-              return await EventTicketFindOne({
-                id: ticket.id,
-                stock: {
-                  $gt: 0,
-                  $gte: ticket.select,
-                },
-              });
-            })
-          )) || []
-        ).filter((ticket) => ticket);
+      const validateTicket = await onValidateTicket(eventData, tickets);
 
-        if (listTickets?.length < tickets?.length) {
-          return {
-            status: false,
-            message: `${getUniqueObjects(listTickets, tickets, "id")
-              .map((obj) => obj.title)
-              .join(", ")} ticket sold out`,
-          };
-        }
-      } else {
-        const allSeatIds = tickets.flatMap((item) => {
-          if (item.isTable) {
-            return item.seatId;
-          } else {
-            return Array(item.select).fill(item.seatId[0]);
-          }
-        });
-
-        const reserveMap = await validateReserveSeats(
-          eventData.url_map,
-          allSeatIds
-        );
-
-        if (!reserveMap.status) {
-          return {
-            status: false,
-            message: reserveMap.message,
-          };
-        }
+      if (!validateTicket.status) {
+        return {
+          status: false,
+          message: validateTicket.message,
+        };
       }
 
       let paymentMethodId = paymentId;
@@ -425,6 +554,48 @@ export default factories.createCoreService(table, () => ({
           id: paymentIntents.id,
           client_secret: paymentIntents.client_secret,
         },
+        status: true,
+      };
+    } catch (e) {
+      return {
+        status: false,
+        message: `${e?.message || ""}`,
+      };
+    }
+  },
+  async postCreatePaymentFree({ user, body }) {
+    try {
+      const { userData, eventId, tickets, type, paymentId, values } = body;
+
+      const emailVal = await validateEmail(userData.email);
+      if (emailVal != "Valid") {
+        return {
+          status: false,
+          data: null,
+          message: "Verify your email not valid",
+        };
+      }
+
+      const eventData: any = await onValidateData(user, eventId);
+
+      if (!eventData?.status) {
+        return {
+          status: false,
+          message: eventData?.message,
+        };
+      }
+
+      const validateTicket = await onValidateTicket(eventData.data, tickets);
+
+      if (!validateTicket.status) {
+        return {
+          status: false,
+          message: validateTicket.message,
+        };
+      }
+
+      return {
+        data: "",
         status: true,
       };
     } catch (e) {
@@ -517,6 +688,116 @@ export default factories.createCoreService(table, () => ({
         metadata: {
           order_id: orderEncrypt,
         },
+      });
+
+      const result = tickets
+        .filter((item) => Array.isArray(item.seatId))
+        .flatMap((item) => {
+          return Array.from({ length: item.select }).map((_, i) => {
+            const seatI = item.isTable
+              ? item.seatId[i] || null
+              : item.seatId[0];
+            const { seatId, select, ...rest } = item;
+            return {
+              ...rest,
+              seatI,
+            };
+          });
+        });
+
+      const ticktsList = await Promise.all(
+        result.map(async (item) => {
+          return await TicketCreate(
+            {
+              table: item?.isTable ? item?.seatI : null,
+              orders_id: order.id,
+              value: item?.price || 0,
+              event_ticket_id: item?.id,
+            },
+            {},
+            ["id"]
+          );
+        })
+      );
+
+      if (eventData.url_map) {
+        const allSeatIds = tickets.flatMap((item) => {
+          if (item.isTable) {
+            return item.seatId;
+          } else {
+            return Array(item.select).fill(item.seatId[0]);
+          }
+        });
+        await bookSeats(eventData.url_map, allSeatIds);
+      }
+
+      await Promise.all(
+        ticktsList.map(async (item) => {
+          return await TicketUpdate(item.id, {
+            id_ticket: encrypt(`ticket_${item.id}`),
+          });
+        })
+      );
+
+      tickets.map((item) => {
+        EventTickettUpdate(item.id, { stock: item.stock - item.select });
+      });
+
+      return {
+        data: orderEncrypt,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
+  async postCreateOrderFree({ body }) {
+    try {
+      const { userData, eventId, tickets, values } = body;
+
+      const eventData = await EventFindOne(
+        {},
+        {
+          ...filterGeneral,
+          id_event: eventId,
+        },
+        ["id", "url_map", "name"]
+      );
+
+      if (!eventData || !userData.email) {
+        return {
+          status: false,
+          data: null,
+          message: "Event not found",
+        };
+      }
+
+      const valUser = await validateUser(userData);
+
+      // url_pdf
+      const order = await OrderCreate({
+        total_price: values.total,
+        base_price: values.subTotal,
+        service_fee: 0,
+        prices: values || {},
+        price_refundable: 0,
+        event_id: eventData?.id,
+        users_id: valUser.id,
+        freeOrder: true,
+      });
+      if (!order) {
+        return {
+          status: false,
+          message: "Failed to create order",
+        };
+      }
+
+      const orderEncrypt = encrypt(`order_${order.id}`);
+      OrderUpdate(order.id, {
+        order_id: orderEncrypt,
       });
 
       const result = tickets

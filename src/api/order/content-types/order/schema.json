@@ -67,6 +67,10 @@
     },
     "discount_price": {
       "type": "decimal"
+    },
+    "freeOrder": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
