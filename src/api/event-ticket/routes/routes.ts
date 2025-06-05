@@ -8,5 +8,10 @@ module.exports = {
         auth: false,
       },
     },
+    {
+      method: "PUT",
+      path: "/event-ticket/putTicketEvents/:id",
+      handler: "event-ticket.putTicketEvents",
+    },
   ],
 };

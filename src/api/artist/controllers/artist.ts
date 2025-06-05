@@ -10,6 +10,9 @@ export default factories.createCoreController(table, ({ strapi }) => ({
   async getArtist() {
     return await strapi.service(table).getArtist();
   },
+  async getListArtist() {
+    return await strapi.service(table).getListArtist();
+  },
   async getArtistDetail(ctx) {
     const { params } = ctx;
     return await strapi.service(table).getArtistDetail({ params });

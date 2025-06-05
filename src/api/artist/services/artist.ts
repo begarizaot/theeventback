@@ -3,7 +3,12 @@
  */
 
 import { factories } from "@strapi/strapi";
-import { ArtistFindOne, ArtistFindPage, filterGeneral } from "./services";
+import {
+  ArtistFindMany,
+  ArtistFindOne,
+  ArtistFindPage,
+  filterGeneral,
+} from "./services";
 
 const table = "api::artist.artist";
 
@@ -15,6 +20,17 @@ export default factories.createCoreService(table, () => ({
         page: 1,
       });
       return { data: service.results, status: true };
+    } catch (e) {
+      return {
+        status: false,
+        message: `${e?.message || ""}`,
+      };
+    }
+  },
+  async getListArtist() {
+    try {
+      const service = await ArtistFindMany();
+      return { data: service, status: true };
     } catch (e) {
       return {
         status: false,

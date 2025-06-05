@@ -10,6 +10,14 @@ module.exports = {
     },
     {
       method: "GET",
+      path: "/artist/getListArtist",
+      handler: "artist.getListArtist",
+      config: {
+        auth: false,
+      },
+    },
+    {
+      method: "GET",
       path: "/artist/getArtistDetail/:id",
       handler: "artist.getArtistDetail",
       config: {

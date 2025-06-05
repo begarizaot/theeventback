@@ -70,12 +70,12 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-  //   if (user.id != eventData?.users_id.id) {
-  //     return {
-  //       status: false,
-  //       message: "You are not the owner of this event",
-  //     };
-  //   }
+    if (user.id != eventData?.users_id.id) {
+      return {
+        status: false,
+        message: "You are not the owner of this event",
+      };
+    }
 
   return {
     status: true,

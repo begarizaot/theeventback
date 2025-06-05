@@ -1,6 +1,6 @@
 import { useMoment } from "../../../hooks";
 
-const populate: any = {
+export const populate: any = {
   event_tickets_ids: {
     fields: [
       "id",
@@ -11,6 +11,10 @@ const populate: any = {
       "start_date",
       "limit",
       "end_date",
+      "stock",
+      "quantity",
+      "isVisible",
+      "codePassword",
     ],
     filters: {
       isVisible: true,
@@ -25,6 +29,12 @@ const populate: any = {
   },
   event_status_id: {
     fields: ["id", "title"],
+    filters: {
+      isVisible: true,
+    },
+  },
+  artists_ids: {
+    fields: ["id", "name"],
     filters: {
       isVisible: true,
     },
@@ -84,10 +94,7 @@ export const EventFindPage = async (
   });
 };
 
-export const EventFindMany = async (
-  filters = {},
-  sort = {}
-) => {
+export const EventFindMany = async (filters = {}, sort = {}) => {
   return await strapi.entityService.findMany("api::event.event", {
     populate: populate,
     filters: {
@@ -111,4 +118,17 @@ export const EventFindOne = async (
       fields: fields,
     })
   )[0];
+};
+
+export const EventUpdate = async (
+  id = null,
+  data = {},
+  populate?,
+  fields = null
+) => {
+  return await strapi.entityService.update("api::event.event", id, {
+    populate: populate || "*",
+    data: data,
+    fields: fields,
+  });
 };

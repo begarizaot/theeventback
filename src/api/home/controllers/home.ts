@@ -12,7 +12,7 @@ export default factories.createCoreController("api::home.home", {
     data.eventCarruselItem = data?.eventCarruselItem?.filter(
       (item) =>
         item.isVisible &&
-        useMoment(item.event_id.start_date).isAfter(useMoment())
+        useMoment(item?.event_id?.start_date).isAfter(useMoment())
     );
     return { data };
   },

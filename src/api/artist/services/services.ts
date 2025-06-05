@@ -50,6 +50,15 @@ export const filterGeneral = {
   },
 };
 
+export const ArtistFindMany = async (filters = {}) => {
+  return await strapi.entityService.findMany("api::artist.artist", {
+    filters: {
+      ...filters,
+      isVisible: true,
+    },
+  });
+};
+
 export const ArtistFindPage = async (
   populateRes = null,
   filters = {},

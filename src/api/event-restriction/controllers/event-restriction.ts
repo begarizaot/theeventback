@@ -4,4 +4,10 @@
 
 import { factories } from '@strapi/strapi'
 
-export default factories.createCoreController('api::event-restriction.event-restriction');
+const table = "api::event-restriction.event-restriction";
+export default factories.createCoreController(table, ({ strapi }) => ({
+  // GET
+  async getListRestrictions() {
+    return await strapi.service(table).getListRestrictions();
+  },
+}));

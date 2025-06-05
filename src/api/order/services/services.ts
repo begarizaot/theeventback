@@ -141,17 +141,17 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
   };
 
   orders.forEach((order: any) => {
-    if (!order.isRefundable && !order.freeOrder) {
+    if (!order.isRefundable) {
       const discount = order.discount_price || 0;
       if (discount > 0) {
         totalDiscountValue += discount;
         totalDiscountQuantity += 1;
       }
-
-      totalBasePrice += order.base_price - Number(discount || 0) || 0;
+      
+      !order.freeOrder &&
+        (totalBasePrice += order.base_price - Number(discount || 0) || 0);
 
       order.tickets_id?.forEach((ticket: any) => {
-        const value = ticket.value || 0;
         const hasTable = ticket?.table;
         const isScanned = ticket.isScanner === true;
 
@@ -160,7 +160,7 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
 
         addToGroup(groups.eventSales, ticket);
 
-        if (!value || value === 0) {
+        if (order.freeOrder) {
           addToGroup(groups.ticketComp, ticket);
         } else if (hasTable) {
           addToGroup(groups.tableSales, ticket);

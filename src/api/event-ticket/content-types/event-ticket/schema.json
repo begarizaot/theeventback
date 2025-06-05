@@ -7,7 +7,9 @@
     "displayName": "EventTickets",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "title": {
       "type": "string"
@@ -19,7 +21,8 @@
       "type": "decimal"
     },
     "stock": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "quantity": {
       "type": "integer"
@@ -49,6 +52,9 @@
     },
     "order": {
       "type": "biginteger"
+    },
+    "codePassword": {
+      "type": "string"
     }
   }
 }

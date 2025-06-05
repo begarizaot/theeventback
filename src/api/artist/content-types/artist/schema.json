@@ -4,9 +4,12 @@
   "info": {
     "singularName": "artist",
     "pluralName": "artists",
-    "displayName": "Artist"
+    "displayName": "Artist",
+    "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "id_artist": {
       "type": "string"
@@ -28,6 +31,10 @@
     },
     "url_spotify": {
       "type": "string"
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

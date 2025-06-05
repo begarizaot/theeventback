@@ -2,7 +2,11 @@ const populate: any = {
   eventCarruselItem: {
     populate: {
       btn: true,
-      event_id: true,
+      event_id: {
+        filters: {
+          isVisible: true,
+        },
+      },
     },
   },
   categories: {

@@ -45,5 +45,18 @@ module.exports = {
       path: "/event/getAdminEventAnality/:id",
       handler: "event.getAdminEventAnality",
     },
+    {
+      method: "PUT",
+      path: "/event/putUpdateEvent/:id",
+      handler: "event.putUpdateEvent",
+    },
+    {
+      method: "PUT",
+      path: "/event/putUpdateEventFollowing/:id",
+      handler: "event.putUpdateEventFollowing",
+      config: {
+        auth: false,
+      },
+    },
   ],
 };

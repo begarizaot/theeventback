@@ -7,7 +7,9 @@
     "displayName": "Categories",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "title": {
       "type": "string"
@@ -24,6 +26,10 @@
     "slug": {
       "type": "uid",
       "targetField": "title"
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

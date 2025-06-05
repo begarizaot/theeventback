@@ -398,6 +398,7 @@ export interface ApiAdminAdmin extends Struct.SingleTypeSchema {
 export interface ApiArtistArtist extends Struct.CollectionTypeSchema {
   collectionName: 'artists';
   info: {
+    description: '';
     displayName: 'Artist';
     pluralName: 'artists';
     singularName: 'artist';
@@ -412,6 +413,7 @@ export interface ApiArtistArtist extends Struct.CollectionTypeSchema {
     description: Schema.Attribute.Blocks;
     events_ids: Schema.Attribute.Relation<'manyToMany', 'api::event.event'>;
     id_artist: Schema.Attribute.String;
+    isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -444,6 +446,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     events_ids: Schema.Attribute.Relation<'oneToMany', 'api::event.event'>;
+    isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -637,6 +640,7 @@ export interface ApiEventTicketEventTicket extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    codePassword: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -657,7 +661,7 @@ export interface ApiEventTicketEventTicket extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     quantity: Schema.Attribute.Integer;
     start_date: Schema.Attribute.DateTime;
-    stock: Schema.Attribute.Integer;
+    stock: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -709,6 +713,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     id_event: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
+    isAdvertising: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     isEndDate: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;

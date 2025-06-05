@@ -4,4 +4,10 @@
 
 import { factories } from '@strapi/strapi'
 
-export default factories.createCoreController('api::category.category');
+const table = "api::category.category";
+export default factories.createCoreController(table, ({ strapi }) => ({
+  // GET
+  async getListCategories() {
+    return await strapi.service(table).getListCategories();
+  },
+}));
