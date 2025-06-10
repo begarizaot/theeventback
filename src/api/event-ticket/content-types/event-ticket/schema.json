@@ -14,9 +14,6 @@
     "title": {
       "type": "string"
     },
-    "description": {
-      "type": "blocks"
-    },
     "price": {
       "type": "decimal"
     },
@@ -55,6 +52,9 @@
     },
     "codePassword": {
       "type": "string"
+    },
+    "description": {
+      "type": "richtext"
     }
   }
 }

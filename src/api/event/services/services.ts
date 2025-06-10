@@ -132,3 +132,11 @@ export const EventUpdate = async (
     fields: fields,
   });
 };
+
+export const EventCreate = async (data = {}, populate?, fields = null) => {
+  return await strapi.entityService.create("api::event.event", {
+    populate: populate || "*",
+    data: { ...data, isVisible: true, isEndDate: false },
+    fields: fields,
+  });
+};

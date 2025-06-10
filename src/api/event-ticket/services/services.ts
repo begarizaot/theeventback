@@ -37,3 +37,15 @@ export const EventTickettUpdate = async (
     }
   );
 };
+
+export const EventTicketCreate = async (
+  data = {},
+  populate?,
+  fields = null
+) => {
+  return await strapi.entityService.create("api::event-ticket.event-ticket", {
+    populate: populate || "*",
+    data: { ...data, isVisible: true, stock: 0, limit: 6 },
+    fields: fields,
+  });
+};

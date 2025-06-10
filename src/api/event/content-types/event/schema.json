@@ -14,26 +14,26 @@
   "attributes": {
     "id_event": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": true,
       "pluginOptions": {}
     },
     "name": {
       "type": "string",
-      "required": true,
+      "required": false,
       "pluginOptions": {}
     },
     "start_date": {
       "type": "datetime",
-      "required": true
+      "required": false
     },
     "end_date": {
       "type": "datetime",
-      "required": true
+      "required": false
     },
     "url_image": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "slug": {
       "type": "uid",
@@ -41,7 +41,7 @@
     },
     "following": {
       "type": "integer",
-      "required": true,
+      "required": false,
       "default": 0
     },
     "event_tickets_ids": {
@@ -86,9 +86,6 @@
       "target": "api::artist.artist",
       "mappedBy": "events_ids"
     },
-    "description": {
-      "type": "blocks"
-    },
     "url_youtube": {
       "type": "json"
     },
@@ -106,6 +103,9 @@
     "isAdvertising": {
       "type": "boolean",
       "default": false
+    },
+    "description": {
+      "type": "richtext"
     }
   }
 }

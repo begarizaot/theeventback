@@ -24,6 +24,12 @@ export default factories.createCoreController(table, ({ strapi }) => ({
     } = ctx;
     return await strapi.service(table).getMyEvents({ user });
   },
+  async getEventAllPage(ctx) {
+    const {
+      request: { query },
+    } = ctx;
+    return await strapi.service(table).getEventAllPage({ query });
+  },
   async getSharedEvents(ctx) {
     const {
       state: { user },
@@ -53,6 +59,13 @@ export default factories.createCoreController(table, ({ strapi }) => ({
       .service(table)
       .putUpdateEventFollowing({ user, params });
   },
+  async postCreateEvent(ctx) {
+    const {
+      state: { user },
+      request: { body },
+    } = ctx;
+    return await strapi.service(table).postCreateEvent({ user, body });
+  },
   async putUpdateEvent(ctx) {
     const {
       state: { user },
@@ -60,5 +73,15 @@ export default factories.createCoreController(table, ({ strapi }) => ({
       request: { body },
     } = ctx;
     return await strapi.service(table).putUpdateEvent({ user, params, body });
+  },
+  async putUpdateEventImage(ctx) {
+    const {
+      state: { user },
+      params,
+      request: { files },
+    } = ctx;
+    return await strapi
+      .service(table)
+      .putUpdateEventImage({ user, params, files });
   },
 }));

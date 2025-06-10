@@ -38,6 +38,35 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
+  async getArtistAllPage({ query }) {
+    const { search, page, size } = query;
+
+    try {
+      const service = await ArtistFindPage(
+        null,
+        {
+          ...filterGeneral,
+          ...(search?.length > 2 && {
+            $or: [{ name: { $containsi: search || "" } }],
+          }),
+        },
+        {
+          pageSize: size,
+          page: page,
+        }
+      );
+      return {
+        data: service.results,
+        pagination: service.pagination,
+        status: true,
+      };
+    } catch (e) {
+      return {
+        status: false,
+        message: `${e?.message || ""}`,
+      };
+    }
+  },
   async getArtistDetail({ params }) {
     try {
       const service = await ArtistFindOne(null, { id_artist: params.id });

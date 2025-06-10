@@ -410,7 +410,7 @@ export interface ApiArtistArtist extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Blocks;
+    description: Schema.Attribute.RichText;
     events_ids: Schema.Attribute.Relation<'manyToMany', 'api::event.event'>;
     id_artist: Schema.Attribute.String;
     isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
@@ -644,7 +644,7 @@ export interface ApiEventTicketEventTicket extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Blocks;
+    description: Schema.Attribute.RichText;
     end_date: Schema.Attribute.DateTime;
     event_id: Schema.Attribute.Relation<'manyToOne', 'api::event.event'>;
     isTable: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -689,8 +689,8 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Blocks;
-    end_date: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    description: Schema.Attribute.RichText;
+    end_date: Schema.Attribute.DateTime;
     event_locations_id: Schema.Attribute.Relation<
       'manyToOne',
       'api::event-location.event-location'
@@ -707,26 +707,22 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::event-ticket.event-ticket'
     >;
-    following: Schema.Attribute.Integer &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<0>;
-    id_event: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
+    following: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    id_event: Schema.Attribute.String & Schema.Attribute.Unique;
     isAdvertising: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     isEndDate: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
       Schema.Attribute.Private;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
+    name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'name'>;
-    start_date: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    start_date: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    url_image: Schema.Attribute.String & Schema.Attribute.Required;
+    url_image: Schema.Attribute.String;
     url_map: Schema.Attribute.String;
     url_youtube: Schema.Attribute.JSON;
     urls_images_advertising: Schema.Attribute.JSON;

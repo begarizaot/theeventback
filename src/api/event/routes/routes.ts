@@ -26,6 +26,14 @@ module.exports = {
     },
     {
       method: "GET",
+      path: "/event/getEventAllPage",
+      handler: "event.getEventAllPage",
+      config: {
+        auth: false,
+      },
+    },
+    {
+      method: "GET",
       path: "/event/getMyEvents",
       handler: "event.getMyEvents",
     },
@@ -46,9 +54,19 @@ module.exports = {
       handler: "event.getAdminEventAnality",
     },
     {
+      method: "POST",
+      path: "/event/postCreateEvent",
+      handler: "event.postCreateEvent",
+    },
+    {
       method: "PUT",
       path: "/event/putUpdateEvent/:id",
       handler: "event.putUpdateEvent",
+    },
+    {
+      method: "PUT",
+      path: "/event/putUpdateEventImage/:id",
+      handler: "event.putUpdateEventImage",
     },
     {
       method: "PUT",

@@ -9,9 +9,14 @@ module.exports = {
       },
     },
     {
+      method: "POST",
+      path: "/event-ticket/createTicketEvents/:id",
+      handler: "event-ticket.createTicketEvents",
+    },
+    {
       method: "PUT",
-      path: "/event-ticket/putTicketEvents/:id",
-      handler: "event-ticket.putTicketEvents",
+      path: "/event-ticket/editTicketEvents/:id",
+      handler: "event-ticket.editTicketEvents",
     },
   ],
 };

@@ -17,9 +17,6 @@
     "name": {
       "type": "string"
     },
-    "description": {
-      "type": "blocks"
-    },
     "url_image": {
       "type": "string"
     },
@@ -35,6 +32,9 @@
     "isVisible": {
       "type": "boolean",
       "default": true
+    },
+    "description": {
+      "type": "richtext"
     }
   }
 }

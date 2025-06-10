@@ -4,6 +4,7 @@
 
 import { factories } from "@strapi/strapi";
 import {
+  EventCreate,
   EventFindMany,
   EventFindOne,
   EventFindPage,
@@ -16,6 +17,13 @@ import {
   TeamAccessFindOne,
 } from "../../team-access/services/services";
 import { OrderAnalityEvent } from "../../order/services/services";
+import { EventLocationFindCreate } from "../../event-location/services/services";
+import { useGooglecCloud } from "../../../hooks";
+import { useCrypto } from "../../../hooks/useCrypto";
+import { EventTicketCreate } from "../../event-ticket/services/services";
+
+const { uploadImage } = useGooglecCloud();
+const { encrypt } = useCrypto();
 
 const onValidateData = async (user: any, eventId: any) => {
   if (!user) {
@@ -147,6 +155,52 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
+  async getEventAllPage({ query }) {
+    const { search, page, size, filter } = query;
+
+    const dataFilter = filter ? JSON.parse(filter) : {};
+    console.log(dataFilter);
+    try {
+      const service = await EventFindPage(
+        {
+          ...filterGeneral,
+          ...(search?.length > 2 && {
+            $or: [{ name: { $containsi: search || "" } }],
+          }),
+          ...(dataFilter && {
+            $or: [
+              ...(dataFilter.category
+                ? [
+                    {
+                      categories_id: {
+                        title: { $containsi: dataFilter.category || "" },
+                      },
+                    },
+                  ]
+                : []),
+            ],
+          }),
+        },
+        {
+          pageSize: size,
+          page: page,
+        },
+        {
+          start_date: "asc",
+        }
+      );
+      return {
+        data: service.results,
+        pagination: service.pagination,
+        status: true,
+      };
+    } catch (e) {
+      return {
+        status: false,
+        message: `${e?.message || ""}`,
+      };
+    }
+  },
   async getSharedEvents({ user }) {
     try {
       if (!user) {
@@ -250,6 +304,89 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
+  async postCreateEvent({ user, body }) {
+    try {
+      if (!user) {
+        return {
+          status: false,
+          message: "User not found",
+        };
+      }
+
+      delete body.id_event;
+
+      const eventData = await EventCreate({
+        ...body,
+        ...(body?.categories && {
+          categories_id: body?.categories,
+        }),
+        ...(body?.artists && {
+          artists_ids: body?.artists,
+        }),
+        ...(body?.age_restrictions && {
+          event_restriction_id: body?.age_restrictions,
+        }),
+        ...(body?.startEndDate && {
+          start_date: body?.startEndDate[0],
+          end_date: body?.startEndDate[1],
+        }),
+        users_id: user.id,
+        event_status_id: 1,
+      });
+
+      let locationData: any = null;
+      if (body?.place) {
+        locationData = await EventLocationFindCreate(
+          body?.place,
+          eventData?.id
+        );
+      }
+
+      const listTickets = await Promise.all(
+        body?.tickests?.map(async (item: any) => {
+          const res = await EventTicketCreate({
+            ...item,
+            event_id: eventData?.id,
+            stock: item?.quantity || 0,
+            ...(item?.startEndDate
+              ? {
+                  start_date: item?.startEndDate[0],
+                  end_date: item?.startEndDate[1],
+                }
+              : {
+                  start_date: eventData?.start_date,
+                  end_date: eventData?.end_date,
+                }),
+            ...(item?.codePassword && {
+              codePassword: item?.codePassword,
+            }),
+          });
+          return res.id;
+        })
+      );
+
+      const eventEncrypt = encrypt(`event_${eventData.id}`);
+      await EventUpdate(eventData?.id, {
+        ...(body?.place && {
+          event_locations_id: locationData?.id,
+        }),
+        id_event: eventEncrypt,
+        event_tickets_ids: listTickets,
+      });
+
+      return {
+        message: "create event successfully",
+        data: eventEncrypt,
+        status: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
   async putUpdateEventFollowing({ user, params }) {
     try {
       const eventData: any = await onValidateData(user, params.id);
@@ -286,14 +423,86 @@ export default factories.createCoreService(table, () => ({
           message: eventData?.message,
         };
       }
-console.log(body)
-      await EventUpdate(eventData?.data?.id, body);
+
+      let locationData: any = null;
+
+      if (body?.place) {
+        locationData = await EventLocationFindCreate(
+          body?.place,
+          eventData?.data?.id
+        );
+      }
+
+      delete body.id_event;
+
+      await EventUpdate(eventData?.data?.id, {
+        ...body,
+        ...(body?.categories && {
+          categories_id: body?.categories,
+        }),
+        ...(body?.artists && {
+          artists_ids: body?.artists,
+        }),
+        ...(body?.age_restrictions && {
+          event_restriction_id: body?.age_restrictions,
+        }),
+        ...(body?.place && {
+          event_locations_id:
+            locationData?.id || eventData?.data?.event_locations_id,
+        }),
+        ...(body?.startEndDate && {
+          start_date: body?.startEndDate[0],
+          end_date: body?.startEndDate[1],
+        }),
+      });
 
       return {
         message: "Update event successfully",
         status: true,
       };
     } catch (error) {
+      console.log(error);
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
+  async putUpdateEventImage({ user, params, files }) {
+    try {
+      const eventData: any = await onValidateData(user, params.id);
+
+      if (!eventData?.status) {
+        return {
+          status: false,
+          message: eventData?.message,
+        };
+      }
+
+      if (!files?.image) {
+        return {
+          status: false,
+          message: "No files provided",
+        };
+      }
+
+      const url_image = await uploadImage(
+        "events",
+        files?.image,
+        eventData?.data?.id,
+        `event_id_${eventData?.data?.id}_${new Date().getTime()}`
+      );
+
+      await EventUpdate(eventData?.data?.id, {
+        url_image: url_image,
+      });
+
+      return {
+        message: "Update event image successfully",
+        status: true,
+      };
+    } catch (error) {
+      console.log(error);
       return {
         status: false,
         message: `${error?.message || ""}`,
