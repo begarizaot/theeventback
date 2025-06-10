@@ -72,7 +72,7 @@ export interface SharedEvents extends Struct.ComponentSchema {
   };
   attributes: {
     btn: Schema.Attribute.Component<'shared.link', false>;
-    description: Schema.Attribute.Blocks;
+    description: Schema.Attribute.RichText;
     event_id: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
     isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
