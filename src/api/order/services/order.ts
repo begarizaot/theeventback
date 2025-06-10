@@ -11,6 +11,7 @@ import {
   useSendGridClient,
   useSendGridMail,
   useStripe,
+  useTwilio,
 } from "../../../hooks";
 import { EventFindOne, filterGeneral } from "../../event/services/services";
 import {
@@ -47,6 +48,7 @@ const {
 const { encrypt } = useCrypto();
 const { mailSend } = useSendGridMail();
 const { uploadPDF } = useGooglecCloud();
+const { sendSMSPhone } = useTwilio();
 
 const onValidateData = async (user: any, eventId: any) => {
   if (!user) {
@@ -70,12 +72,12 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-    if (user.id != eventData?.users_id.id) {
-      return {
-        status: false,
-        message: "You are not the owner of this event",
-      };
-    }
+  if (user.id != eventData?.users_id.id) {
+    return {
+      status: false,
+      message: "You are not the owner of this event",
+    };
+  }
 
   return {
     status: true,
@@ -189,6 +191,12 @@ export default factories.createCoreService(table, () => ({
           url_pdf: pdfUrl,
         });
       }
+
+      users_id?.phoneNumber &&
+        (await sendSMSPhone(
+          `${users_id?.country_id?.code || "+1"}${users_id?.phoneNumber}`,
+          `Your order for ${event_id?.name} has been successfully created. You can download your tickets from the following link: ${pdfUrl}`
+        ));
 
       await mailSend({
         email: users_id?.email || "",

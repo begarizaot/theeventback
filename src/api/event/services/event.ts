@@ -159,7 +159,7 @@ export default factories.createCoreService(table, () => ({
     const { search, page, size, filter } = query;
 
     const dataFilter = filter ? JSON.parse(filter) : {};
-    console.log(dataFilter);
+
     try {
       const service = await EventFindPage(
         {

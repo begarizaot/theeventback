@@ -22,6 +22,20 @@ export const useTwilio = () => {
     }
   };
 
+  const sendSMSPhone = async (to, message) => {
+    try {
+      const result = await client.messages.create({
+        body: message,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to,
+      });
+      return result;
+    } catch (error) {
+      console.error("Error al enviar SMS:", error.message);
+      throw error;
+    }
+  };
+
   const verifySMS = async ({ to, code }) => {
     try {
       const response = await client.verify.v2
@@ -38,5 +52,5 @@ export const useTwilio = () => {
     }
   };
 
-  return { sendSMS, verifySMS };
+  return { sendSMS, verifySMS, sendSMSPhone };
 };
