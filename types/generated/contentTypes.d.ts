@@ -876,6 +876,39 @@ export interface ApiServiceFeeServiceFee extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiSuperAdminSuperAdmin extends Struct.CollectionTypeSchema {
+  collectionName: 'super_admins';
+  info: {
+    description: '';
+    displayName: 'superAdmin';
+    pluralName: 'super-admins';
+    singularName: 'super-admin';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::super-admin.super-admin'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
 export interface ApiTeamAccessTeamAccess extends Struct.CollectionTypeSchema {
   collectionName: 'team_accesses';
   info: {
@@ -1512,6 +1545,7 @@ declare module '@strapi/strapi' {
       'api::home.home': ApiHomeHome;
       'api::order.order': ApiOrderOrder;
       'api::service-fee.service-fee': ApiServiceFeeServiceFee;
+      'api::super-admin.super-admin': ApiSuperAdminSuperAdmin;
       'api::team-access.team-access': ApiTeamAccessTeamAccess;
       'api::team-type-role.team-type-role': ApiTeamTypeRoleTeamTypeRole;
       'api::ticket.ticket': ApiTicketTicket;
