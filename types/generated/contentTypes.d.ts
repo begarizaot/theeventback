@@ -730,6 +730,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
       'oneToOne',
       'plugin::users-permissions.user'
     >;
+    vanue: Schema.Attribute.String;
   };
 }
 
