@@ -1,6 +1,7 @@
 import { CountryFindOne } from "../../../api/country/services/services";
 import { useSendGridClient, useTwilio } from "../../../hooks";
 import { UserCreate, UserFindOne, UserUpdate } from "../services/services";
+import jwt from "jsonwebtoken";
 
 const { validateEmail } = useSendGridClient();
 const { sendSMS, verifySMS } = useTwilio();
@@ -18,6 +19,60 @@ const onResData = (data) => {
 };
 
 export default {
+  async getUserData(ctx) {
+    try {
+      const {
+        request: {
+          header: { authorization },
+        },
+      } = ctx;
+
+      if (!authorization) {
+        return {
+          status: false,
+          data: null,
+          message: "Authorization header is missing",
+        };
+      }
+
+      const token = authorization.split(" ")[1];
+      if (!token) {
+        return {
+          status: false,
+          data: null,
+          message: "Token is missing",
+        };
+      }
+      const decoded:any = jwt.verify(
+        token,
+        strapi.config.get("plugin.users-permissions.jwtSecret"),
+        { ignoreExpiration: true }
+      );
+      if (!decoded) {
+        return {
+          status: false,
+          data: null,
+          message: "Invalid token",
+        };
+      }
+      const userData: any = await UserFindOne({
+        id: decoded?.id,
+      });
+
+      return {
+        status: true,
+        message: "",
+        data: userData,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: false,
+        data: null,
+        message: "User not found",
+      };
+    }
+  },
   async getValidateEmail(ctx) {
     try {
       const {

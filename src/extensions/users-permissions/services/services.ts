@@ -16,7 +16,13 @@ const populateReq = {
   },
 };
 
-const fieldsReq: any = ["email", "firstName", "lastName", "phoneNumber"];
+const fieldsReq: any = [
+  "email",
+  "firstName",
+  "lastName",
+  "phoneNumber",
+  "isOrganizer",
+];
 
 export const validateUser = async (body: User) => {
   let userData: any = (
