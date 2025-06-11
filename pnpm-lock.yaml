@@ -35,6 +35,9 @@ importers:
       image-to-base64:
         specifier: ^2.2.0
         version: 2.2.0
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
       moment-timezone:
         specifier: ^0.5.48
         version: 0.5.48
@@ -7637,7 +7640,7 @@ snapshots:
       '@strapi/design-system': 2.0.0-rc.21(@babel/runtime@7.27.0)(@codemirror/autocomplete@6.18.6)(@codemirror/language@6.11.0)(@codemirror/lint@6.8.5)(@codemirror/search@6.5.10)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.36.5)(@strapi/icons@2.0.0-rc.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)))(@types/react-dom@18.3.6(@types/react@18.3.20))(@types/react@18.3.20)(codemirror@5.65.19)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@strapi/icons': 2.0.0-rc.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@strapi/permissions': 5.12.5
-      '@strapi/types': 5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.8.3)
+      '@strapi/types': 5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.4.4)
       '@strapi/typescript-utils': 5.12.5
       '@strapi/utils': 5.12.5
       '@testing-library/dom': 10.1.0
@@ -7830,7 +7833,7 @@ snapshots:
       '@strapi/database': 5.12.5(@types/node@20.17.30)(pg@8.8.0)
       '@strapi/design-system': 2.0.0-rc.21(@babel/runtime@7.27.0)(@codemirror/autocomplete@6.18.6)(@codemirror/language@6.11.0)(@codemirror/lint@6.8.5)(@codemirror/search@6.5.10)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.36.5)(@strapi/icons@2.0.0-rc.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)))(@types/react-dom@18.3.6(@types/react@18.3.20))(@types/react@18.3.20)(codemirror@5.65.19)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@strapi/icons': 2.0.0-rc.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
-      '@strapi/types': 5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.8.3)
+      '@strapi/types': 5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.4.4)
       '@strapi/utils': 5.12.5
       date-fns: 2.30.0
       date-fns-tz: 2.0.1(date-fns@2.30.0)
@@ -7918,7 +7921,7 @@ snapshots:
       '@strapi/generators': 5.12.5
       '@strapi/logger': 5.12.5
       '@strapi/permissions': 5.12.5
-      '@strapi/types': 5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.8.3)
+      '@strapi/types': 5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.4.4)
       '@strapi/typescript-utils': 5.12.5
       '@strapi/utils': 5.12.5
       bcryptjs: 2.4.3
@@ -8335,7 +8338,7 @@ snapshots:
       '@strapi/logger': 5.12.5
       '@strapi/permissions': 5.12.5
       '@strapi/review-workflows': 5.12.5(b24e5130bcaf6cf6fcac0ab94f47c601)
-      '@strapi/types': 5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.8.3)
+      '@strapi/types': 5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.4.4)
       '@strapi/typescript-utils': 5.12.5
       '@strapi/upload': 5.12.5(de6ae85809e1f4e2c970de76d1eb5b2f)
       '@strapi/utils': 5.12.5
@@ -8436,6 +8439,34 @@ snapshots:
       - webpack-cli
       - webpack-dev-server
       - webpack-plugin-serve
+
+  '@strapi/types@5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.4.4)':
+    dependencies:
+      '@casl/ability': 6.5.0
+      '@koa/cors': 5.0.0
+      '@koa/router': 12.0.2
+      '@strapi/database': 5.12.5(@types/node@20.17.30)(pg@8.8.0)
+      '@strapi/logger': 5.12.5
+      '@strapi/permissions': 5.12.5
+      '@strapi/utils': 5.12.5
+      commander: 8.3.0
+      koa: 2.15.4
+      koa-body: 6.0.1
+      node-schedule: 2.1.1
+      typedoc: 0.25.10(typescript@5.4.4)
+      typedoc-github-wiki-theme: 1.1.0(typedoc-plugin-markdown@3.17.1(typedoc@0.25.10(typescript@5.8.3)))(typedoc@0.25.10(typescript@5.8.3))
+      typedoc-plugin-markdown: 3.17.1(typedoc@0.25.10(typescript@5.8.3))
+    transitivePeerDependencies:
+      - '@types/node'
+      - better-sqlite3
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - sqlite3
+      - supports-color
+      - tedious
+      - typescript
 
   '@strapi/types@5.12.5(@types/node@20.17.30)(pg@8.8.0)(typescript@5.8.3)':
     dependencies:
@@ -9664,7 +9695,7 @@ snapshots:
       postcss-modules-scope: 3.2.1(postcss@8.5.3)
       postcss-modules-values: 4.0.0(postcss@8.5.3)
       postcss-value-parser: 4.2.0
-      semver: 7.5.4
+      semver: 7.7.1
     optionalDependencies:
       webpack: 5.99.6(esbuild@0.25.2)
 
@@ -10201,7 +10232,7 @@ snapshots:
       minimatch: 3.1.2
       node-abort-controller: 3.1.1
       schema-utils: 3.3.0
-      semver: 7.5.4
+      semver: 7.7.1
       tapable: 2.2.1
       typescript: 5.4.4
       webpack: 5.99.6(esbuild@0.25.2)
@@ -10337,7 +10368,7 @@ snapshots:
       get-it: 8.6.7
       registry-auth-token: 5.1.0
       registry-url: 5.1.0
-      semver: 7.5.4
+      semver: 7.7.1
     transitivePeerDependencies:
       - debug
 
@@ -10409,7 +10440,7 @@ snapshots:
       es6-error: 4.1.1
       matcher: 3.0.0
       roarr: 2.15.4
-      semver: 7.5.4
+      semver: 7.7.1
       serialize-error: 7.0.1
 
   global-modules@1.0.0:
@@ -11583,7 +11614,7 @@ snapshots:
       ignore-by-default: 1.0.1
       minimatch: 3.1.2
       pstree.remy: 1.1.8
-      semver: 7.5.4
+      semver: 7.7.1
       simple-update-notifier: 2.0.0
       supports-color: 5.5.0
       touch: 3.1.1
@@ -11757,7 +11788,7 @@ snapshots:
       got: 11.8.6
       registry-auth-token: 4.2.2
       registry-url: 5.1.0
-      semver: 7.5.4
+      semver: 7.7.1
 
   packet-reader@1.0.0: {}
 
@@ -12668,7 +12699,7 @@ snapshots:
 
   simple-update-notifier@2.0.0:
     dependencies:
-      semver: 7.5.4
+      semver: 7.7.1
 
   sirv@2.0.4:
     dependencies:
@@ -13038,6 +13069,14 @@ snapshots:
     dependencies:
       handlebars: 4.7.8
       typedoc: 0.25.10(typescript@5.8.3)
+
+  typedoc@0.25.10(typescript@5.4.4):
+    dependencies:
+      lunr: 2.3.9
+      marked: 4.3.0
+      minimatch: 9.0.5
+      shiki: 0.14.7
+      typescript: 5.4.4
 
   typedoc@0.25.10(typescript@5.8.3):
     dependencies:
