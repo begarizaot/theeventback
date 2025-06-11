@@ -45,7 +45,7 @@ export default {
       }
       const decoded:any = jwt.verify(
         token,
-        strapi.config.get("plugin.users-permissions.jwtSecret"),
+        process.env.JWT_SECRET,
         { ignoreExpiration: true }
       );
       if (!decoded) {
