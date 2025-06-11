@@ -4,11 +4,16 @@
 
 import { factories } from "@strapi/strapi";
 import {
+  ArtistCreate,
   ArtistFindMany,
   ArtistFindOne,
   ArtistFindPage,
+  ArtistUpdate,
   filterGeneral,
 } from "./services";
+import { useCrypto } from "../../../hooks/useCrypto";
+
+const { encrypt } = useCrypto();
 
 const table = "api::artist.artist";
 
@@ -97,6 +102,32 @@ export default factories.createCoreService(table, () => ({
       return {
         status: false,
         message: `${e?.message || ""}`,
+      };
+    }
+  },
+  async postCreateArtist({ body }) {
+    try {
+      const artist = await ArtistCreate({ ...body });
+      if (!artist) {
+        return {
+          status: false,
+          message: "Failed to create artist",
+        };
+      }
+
+      const artistEncrypt = encrypt(`artist_${artist.id}`);
+      ArtistUpdate(artist.id, {
+        id_artist: artistEncrypt,
+      });
+
+      return {
+        data: artistEncrypt,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
       };
     }
   },
