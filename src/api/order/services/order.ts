@@ -331,6 +331,9 @@ export default factories.createCoreService(table, () => ({
     try {
       const order = await OrderFindPage(
         {
+          event_id: {
+            id: eventData?.data?.id,
+          },
           $or: [{ freeOrder: { $eq: false } }, { freeOrder: { $null: true } }],
           ...(search?.length > 2 && {
             $or: [
@@ -502,13 +505,13 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const eventData = await EventFindOne(
+      const eventData: any = await EventFindOne(
         {},
         {
           ...filterGeneral,
           id_event: eventId,
         },
-        ["id", "url_map", "name"]
+        ["id", "url_map", "name", "event_status_id"]
       );
 
       if (!eventData) {
@@ -516,6 +519,14 @@ export default factories.createCoreService(table, () => ({
           status: false,
           data: null,
           message: "Event not found",
+        };
+      }
+
+      if (eventData?.event_status_id?.id != 1) {
+        return {
+          status: false,
+          data: null,
+          message: "Event is not active",
         };
       }
 
