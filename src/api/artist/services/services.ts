@@ -93,3 +93,24 @@ export const ArtistFindOne = async (
     })
   )[0];
 };
+
+export const ArtistCreate = async (data = {}, populate?, fields = null) => {
+  return await strapi.entityService.create("api::artist.artist", {
+    populate: populate || "*",
+    data: data,
+    fields: fields,
+  });
+};
+
+export const ArtistUpdate = async (
+  id = null,
+  data = {},
+  populate?,
+  fields = null
+) => {
+  return await strapi.entityService.update("api::artist.artist", id, {
+    populate: populate || "*",
+    data: data,
+    fields: fields,
+  });
+};

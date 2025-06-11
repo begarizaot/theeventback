@@ -40,5 +40,13 @@ module.exports = {
         auth: false,
       },
     },
+    {
+      method: "POST",
+      path: "/artist/postCreateArtist",
+      handler: "artist.postCreateArtist",
+      config: {
+        auth: false,
+      },
+    },
   ],
 };
