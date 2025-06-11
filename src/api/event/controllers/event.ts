@@ -51,13 +51,8 @@ export default factories.createCoreController(table, ({ strapi }) => ({
     return await strapi.service(table).getAdminEventAnality({ params, user });
   },
   async putUpdateEventFollowing(ctx) {
-    const {
-      state: { user },
-      params,
-    } = ctx;
-    return await strapi
-      .service(table)
-      .putUpdateEventFollowing({ user, params });
+    const { params } = ctx;
+    return await strapi.service(table).putUpdateEventFollowing({ params });
   },
   async postCreateEvent(ctx) {
     const {

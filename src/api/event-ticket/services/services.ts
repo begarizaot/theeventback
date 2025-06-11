@@ -45,7 +45,7 @@ export const EventTicketCreate = async (
 ) => {
   return await strapi.entityService.create("api::event-ticket.event-ticket", {
     populate: populate || "*",
-    data: { ...data, isVisible: true, stock: 0, limit: 6 },
+    data: { ...data, isVisible: true, limit: 6 },
     fields: fields,
   });
 };

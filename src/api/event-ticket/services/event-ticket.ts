@@ -77,6 +77,7 @@ export default factories.createCoreService(table, () => ({
       await EventTicketCreate({
         ...body,
         event_id: eventData?.data?.id,
+        stock: body?.quantity || 0,
         ...(body?.startEndDate
           ? {
               start_date: body?.startEndDate[0],
