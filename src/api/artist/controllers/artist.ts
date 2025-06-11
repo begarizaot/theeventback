@@ -27,4 +27,10 @@ export default factories.createCoreController(table, ({ strapi }) => ({
     const { params } = ctx;
     return await strapi.service(table).getArtistMeta({ params });
   },
+  async postCreateArtist(ctx) {
+    const {
+      request: { body },
+    } = ctx;
+    return await strapi.service(table).postCreateArtist({ body });
+  },
 }));

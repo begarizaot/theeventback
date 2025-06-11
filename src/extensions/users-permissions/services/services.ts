@@ -16,7 +16,13 @@ const populateReq = {
   },
 };
 
-const fieldsReq: any = ["email", "firstName", "lastName", "phoneNumber"];
+const fieldsReq: any = [
+  "email",
+  "firstName",
+  "lastName",
+  "phoneNumber",
+  "isOrganizer",
+];
 
 export const validateUser = async (body: User) => {
   let userData: any = (
@@ -35,7 +41,8 @@ export const validateUser = async (body: User) => {
     userData = strapi.entityService.create("plugin::users-permissions.user", {
       data: {
         ...body,
-        username: body.email,
+        username: `${body.email}`.toLocaleLowerCase(),
+        email: `${body.email}`.toLocaleLowerCase(),
         confirmed: true,
         publishedAt: new Date(),
         role: {
@@ -82,9 +89,9 @@ export const UserCreate = async (dataRes: any = {}, populate?) => {
     populate: populate || populateReq || "*",
     data: {
       ...dataRes,
-      username: dataRes.email,
+      username: `${dataRes.email}`.toLocaleLowerCase(),
+      email: `${dataRes.email}`.toLocaleLowerCase(),
       confirmed: true,
-      publishedAt: new Date(),
       role: {
         id: 2,
       },

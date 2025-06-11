@@ -123,19 +123,19 @@ export const EventFindOne = async (
 export const EventUpdate = async (
   id = null,
   data = {},
-  populate?,
+  populateRes?,
   fields = null
 ) => {
   return await strapi.entityService.update("api::event.event", id, {
-    populate: populate || "*",
+    populate: populateRes || populate || "*",
     data: data,
     fields: fields,
   });
 };
 
-export const EventCreate = async (data = {}, populate?, fields = null) => {
+export const EventCreate = async (data = {}, populateRes?, fields = null) => {
   return await strapi.entityService.create("api::event.event", {
-    populate: populate || "*",
+    populate: populateRes || populate || "*",
     data: { ...data, isVisible: true, isEndDate: false },
     fields: fields,
   });

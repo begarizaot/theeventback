@@ -20,6 +20,7 @@
     "email": {
       "type": "email",
       "minLength": 6,
+      "unique": true,
       "configurable": false,
       "required": true
     },
@@ -70,7 +71,8 @@
       "type": "string"
     },
     "phoneNumber": {
-      "type": "string"
+      "type": "string",
+      "unique": true
     },
     "country_id": {
       "type": "relation",

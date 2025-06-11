@@ -24,6 +24,7 @@
     "@strapi/strapi": "5.12.5",
     "crypto": "^1.0.1",
     "image-to-base64": "^2.2.0",
+    "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.48",
     "pdfmake": "^0.2.19",
     "pg": "8.8.0",

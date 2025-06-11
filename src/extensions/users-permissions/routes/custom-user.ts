@@ -1,6 +1,15 @@
 export default [
   {
     method: "GET",
+    path: "/getUserData",
+    handler: "custom-user.getUserData",
+    config: {
+      policies: [],
+      auth: false,
+    },
+  },
+  {
+    method: "GET",
     path: "/getValidateEmail/:email",
     handler: "custom-user.getValidateEmail",
     config: {

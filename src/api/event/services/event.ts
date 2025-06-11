@@ -332,6 +332,13 @@ export default factories.createCoreService(table, () => ({
         }),
         users_id: user.id,
         event_status_id: 1,
+        slug: body?.name
+          ?.toLowerCase()
+          .replace(/ /g, "-")
+          .replace(/[^\w\-]+/g, "")
+          .replace(/\-\-+/g, "-")
+          .replace(/^-+/, "")
+          .replace(/-+$/, ""),
       });
 
       let locationData: any = null;
@@ -347,7 +354,7 @@ export default factories.createCoreService(table, () => ({
           const res = await EventTicketCreate({
             ...item,
             event_id: eventData?.id,
-            stock: item?.quantity || 0,
+            stock: item?.quantity,
             ...(item?.startEndDate
               ? {
                   start_date: item?.startEndDate[0],
@@ -366,7 +373,7 @@ export default factories.createCoreService(table, () => ({
       );
 
       const eventEncrypt = encrypt(`event_${eventData.id}`);
-      await EventUpdate(eventData?.id, {
+      const eventDataRes = await EventUpdate(eventData?.id, {
         ...(body?.place && {
           event_locations_id: locationData?.id,
         }),
@@ -376,7 +383,7 @@ export default factories.createCoreService(table, () => ({
 
       return {
         message: "create event successfully",
-        data: eventEncrypt,
+        data: eventDataRes,
         status: true,
       };
     } catch (error) {
@@ -387,19 +394,25 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
-  async putUpdateEventFollowing({ user, params }) {
+  async putUpdateEventFollowing({ params }) {
     try {
-      const eventData: any = await onValidateData(user, params.id);
+      const eventData: any = await EventFindOne(
+        null,
+        {
+          id_event: params.id,
+        },
+        ["id", "following"]
+      );
 
-      if (!eventData?.status) {
+      if (!eventData) {
         return {
           status: false,
-          message: eventData?.message,
+          message: "Event not found",
         };
       }
 
-      await EventUpdate(eventData?.data?.id, {
-        following: Number(eventData?.data?.following ?? 0) + 1,
+      await EventUpdate(eventData?.id, {
+        following: Number(eventData?.following ?? 0) + 1,
       });
 
       return {

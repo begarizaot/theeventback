@@ -106,6 +106,9 @@
     },
     "description": {
       "type": "richtext"
+    },
+    "vanue": {
+      "type": "string"
     }
   }
 }
