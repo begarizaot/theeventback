@@ -13,6 +13,7 @@ import {
   populate,
 } from "./services";
 import {
+  TeamAccessCreate,
   TeamAccessFindMany,
   TeamAccessFindOne,
 } from "../../team-access/services/services";
@@ -21,6 +22,7 @@ import { EventLocationFindCreate } from "../../event-location/services/services"
 import { useGooglecCloud } from "../../../hooks";
 import { useCrypto } from "../../../hooks/useCrypto";
 import { EventTicketCreate } from "../../event-ticket/services/services";
+import { SuperAdminFindMany } from "../../super-admin/services/services";
 
 const { uploadImage } = useGooglecCloud();
 const { encrypt } = useCrypto();
@@ -380,6 +382,20 @@ export default factories.createCoreService(table, () => ({
         id_event: eventEncrypt,
         event_tickets_ids: listTickets,
       });
+
+      const superAdmins = await SuperAdminFindMany();
+
+      if (superAdmins && superAdmins?.length > 0) {
+        await Promise.all(
+          superAdmins.map(async (item: any) => {
+            TeamAccessCreate({
+              event_id: eventData?.id,
+              user_id: item?.users_id?.id,
+              type_role_id: 1,
+            });
+          })
+        );
+      }
 
       return {
         message: "create event successfully",
