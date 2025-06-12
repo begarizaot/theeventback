@@ -397,6 +397,9 @@ export default factories.createCoreService(table, () => ({
       const order = await OrderFindPage(
         {
           freeOrder: true,
+          event_id: {
+            id: eventData?.data?.id,
+          },
           ...(search?.length > 2 && {
             $or: [
               { users_id: { email: { $containsi: search || "" } } },
