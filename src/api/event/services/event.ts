@@ -165,7 +165,6 @@ export default factories.createCoreService(table, () => ({
     try {
       const service = await EventFindPage(
         {
-          ...filterGeneral,
           ...(search?.length > 2 && {
             $or: [{ name: { $containsi: search || "" } }],
           }),
@@ -182,6 +181,7 @@ export default factories.createCoreService(table, () => ({
                 : []),
             ],
           }),
+          ...filterGeneral,
         },
         {
           pageSize: size,
