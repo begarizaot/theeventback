@@ -13,6 +13,7 @@ import {
   populate,
 } from "./services";
 import {
+  onValidateTeamAccess,
   TeamAccessCreate,
   TeamAccessFindMany,
   TeamAccessFindOne,
@@ -49,10 +50,12 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-  if (user.id != eventData?.users_id.id) {
+  const resTeam = await onValidateTeamAccess(user, eventData);
+
+  if (!resTeam.status) {
     return {
       status: false,
-      message: "You are not the owner of this event",
+      message: resTeam.message,
     };
   }
 
@@ -147,7 +150,7 @@ export default factories.createCoreService(table, () => ({
         };
       });
       return {
-        data: [...service],
+        data: [...service, ...resServiceTeam],
         status: true,
       };
     } catch (e) {

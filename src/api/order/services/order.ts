@@ -34,6 +34,7 @@ import {
   OrderUpdate,
 } from "./services";
 import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
+import { onValidateTeamAccess } from "../../team-access/services/services";
 
 const { validateEmail } = useSendGridClient();
 const { getUniqueObjects } = useGeneral();
@@ -72,10 +73,12 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-  if (user.id != eventData?.users_id.id) {
+  const resTeam = await onValidateTeamAccess(user, eventData);
+
+  if (!resTeam.status) {
     return {
       status: false,
-      message: "You are not the owner of this event",
+      message: resTeam.message,
     };
   }
 
@@ -159,14 +162,14 @@ export default factories.createCoreService(table, () => ({
         }
       );
 
-      if ((!order || !order.stripe_id) && !order.freeOrder) {
+      if ((!order || !order?.stripe_id) && !order?.freeOrder) {
         return {
           status: false,
           message: "Order not found or already paid",
         };
       }
 
-      if (!order.freeOrder) {
+      if (!order?.freeOrder) {
         const paymentInte = await retrievePaymentIntents(order?.stripe_id);
         if (!paymentInte?.status?.includes("succe")) {
           return {
@@ -509,12 +512,14 @@ export default factories.createCoreService(table, () => ({
       }
 
       const eventData: any = await EventFindOne(
-        {},
+        {
+          event_status_id: true,
+        },
         {
           ...filterGeneral,
           id_event: eventId,
         },
-        ["id", "url_map", "name", "event_status_id"]
+        ["id", "url_map", "name"]
       );
 
       if (!eventData) {
@@ -557,6 +562,7 @@ export default factories.createCoreService(table, () => ({
       let metadata = {
         name: `${userData.firstName} ${userData.lastName}`,
         email: userData.email,
+        country: userData.country,
         phone: userData.phoneNumber,
         eventName: eventData?.name,
         id_event: eventId,
@@ -587,7 +593,7 @@ export default factories.createCoreService(table, () => ({
   },
   async postCreatePaymentFree({ user, body }) {
     try {
-      const { userData, eventId, tickets, type, paymentId, values } = body;
+      const { userData, eventId, tickets } = body;
 
       const emailVal = await validateEmail(userData.email);
       if (emailVal != "Valid") {

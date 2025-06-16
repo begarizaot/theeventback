@@ -4,6 +4,7 @@
 
 import { factories } from "@strapi/strapi";
 import {
+  onValidateTeamAccess,
   populateTeamAccess,
   TeamAccessCreate,
   TeamAccessFindPage,
@@ -38,12 +39,14 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-    if (user.id != eventData?.users_id.id) {
-      return {
-        status: false,
-        message: "You are not the owner of this event",
-      };
-    }
+  const resTeam = await onValidateTeamAccess(user, eventData);
+
+  if (!resTeam.status) {
+    return {
+      status: false,
+      message: resTeam.message,
+    };
+  }
 
   return {
     status: true,
