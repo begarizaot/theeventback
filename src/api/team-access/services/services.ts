@@ -19,6 +19,30 @@ export const populateTeamAccess: any = {
   },
 };
 
+export const onValidateTeamAccess = async (user, eventData) => {
+  if (user.id != eventData?.users_id.id) {
+    const serviceTeam = await TeamAccessFindOne({
+      user_id: {
+        id: user.id,
+      },
+      event_id: {
+        id: eventData.id,
+      },
+    });
+
+    if (serviceTeam && serviceTeam?.isAdmin) {
+      return {
+        status: true,
+      };
+    }
+
+    return {
+      status: false,
+      message: "You are not the owner of this event",
+    };
+  }
+};
+
 export const TeamAccessFindMany = async (filters = {}, sort = {}) => {
   return await strapi.entityService.findMany("api::team-access.team-access", {
     populate: populateTeamAccess,
