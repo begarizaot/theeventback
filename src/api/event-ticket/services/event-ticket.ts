@@ -38,7 +38,7 @@ const onValidateData = async (user: any, eventId: any) => {
 
   const resTeam = await onValidateTeamAccess(user, eventData);
   
-    if (!resTeam.status) {
+    if (!resTeam?.status) {
       return {
         status: false,
         message: resTeam.message,
