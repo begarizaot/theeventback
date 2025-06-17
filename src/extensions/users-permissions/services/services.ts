@@ -1,3 +1,5 @@
+import { CountryFindOne } from "../../../api/country/services/services";
+
 interface User {
   username?: string;
   email: string;
@@ -8,6 +10,7 @@ interface User {
   password?: string;
   blocked?: boolean;
   provider?: string;
+  country?: string;
 }
 
 const populateReq = {
@@ -38,11 +41,15 @@ export const validateUser = async (body: User) => {
   )[0];
 
   if (!userData) {
+    const countryReq = await CountryFindOne({
+      code: { $eqi: body?.country },
+    });
     userData = strapi.entityService.create("plugin::users-permissions.user", {
       data: {
         ...body,
         username: `${body.email}`.toLocaleLowerCase(),
         email: `${body.email}`.toLocaleLowerCase(),
+        country_id: countryReq?.id || 1,
         confirmed: true,
         publishedAt: new Date(),
         role: {
