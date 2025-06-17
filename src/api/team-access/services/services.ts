@@ -41,6 +41,10 @@ export const onValidateTeamAccess = async (user, eventData) => {
       message: "You are not the owner of this event",
     };
   }
+
+  return {
+    status: true,
+  };
 };
 
 export const TeamAccessFindMany = async (filters = {}, sort = {}) => {
