@@ -6,6 +6,11 @@ module.exports = {
       handler: "team-access.getListTeamAccess",
     },
     {
+      method: "GET",
+      path: "/team-access/getTeamAccess/:eventId",
+      handler: "team-access.getTeamAccess",
+    },
+    {
       method: "POST",
       path: "/team-access/postCreateTeamAccess/:eventId",
       handler: "team-access.postCreateTeamAccess",

@@ -1,3 +1,5 @@
+import { AdminFindMany } from "../../admin/services/services";
+
 export const populateTeamAccess: any = {
   event_id: {
     populate: {
@@ -19,9 +21,9 @@ export const populateTeamAccess: any = {
   },
 };
 
-export const onValidateTeamAccess = async (user, eventData) => {
+export const onValidateTeamAccess = async ({ user, eventData }) => {
   if (user.id != eventData?.users_id.id) {
-    const serviceTeam = await TeamAccessFindOne({
+    const serviceTeam:any = await TeamAccessFindOne({
       user_id: {
         id: user.id,
       },
@@ -44,6 +46,7 @@ export const onValidateTeamAccess = async (user, eventData) => {
 
   return {
     status: true,
+    message: "",
   };
 };
 

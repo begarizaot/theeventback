@@ -17,6 +17,15 @@ export default factories.createCoreController(table, ({ strapi }) => ({
       .service(table)
       .getListTeamAccess({ user, params, query });
   },
+  async getTeamAccess(ctx) {
+    const {
+      state: { user },
+      params,
+    } = ctx;
+    return await strapi
+      .service(table)
+      .getTeamAccess({ user, params });
+  },
   async postCreateTeamAccess(ctx) {
     const {
       state: { user },

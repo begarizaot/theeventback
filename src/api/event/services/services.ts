@@ -58,9 +58,32 @@ export const filterGeneral = {
   },
   $or: [
     {
-      start_date: {
-        $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD HH:mm:ss"),
-      },
+      $and: [
+        {
+          opening_extension_date: {
+            $notNull: true,
+          },
+        },
+        {
+          opening_extension_date: {
+            $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD HH:mm:ss"),
+          },
+        },
+      ],
+    },
+    {
+      $and: [
+        {
+          opening_extension_date: {
+            $null: true,
+          },
+        },
+        {
+          start_date: {
+            $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD HH:mm:ss"),
+          },
+        },
+      ],
     },
     {
       $and: [
@@ -73,7 +96,7 @@ export const filterGeneral = {
       ],
     },
   ],
-};
+}
 
 export const EventFindPage = async (
   filters = {},
