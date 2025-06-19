@@ -50,12 +50,12 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-  const resTeam = await onValidateTeamAccess(user, eventData);
+  const resTeam = await onValidateTeamAccess({ user, eventData });
 
   if (!resTeam?.status) {
     return {
       status: false,
-      message: resTeam.message,
+      message: resTeam?.message,
     };
   }
 
@@ -256,20 +256,8 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      if (event.users_id.id == user.id) {
-        return {
-          data: event,
-          status: true,
-        };
-      }
-
-      const service: any = await TeamAccessFindOne({
-        user_id: {
-          id: user.id,
-        },
-      });
       return {
-        data: service.event_id,
+        data: event,
         status: true,
       };
     } catch (e) {

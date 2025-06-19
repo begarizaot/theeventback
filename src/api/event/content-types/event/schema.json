@@ -109,6 +109,12 @@
     },
     "vanue": {
       "type": "string"
+    },
+    "opening_extension_date": {
+      "type": "datetime"
+    },
+    "map_img_url": {
+      "type": "string"
     }
   }
 }

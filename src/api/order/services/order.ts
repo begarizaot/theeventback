@@ -73,14 +73,14 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-  const resTeam = await onValidateTeamAccess(user, eventData);
+  // const resTeam = await onValidateTeamAccess({user, eventData});
 
-  if (!resTeam?.status) {
-    return {
-      status: false,
-      message: resTeam.message,
-    };
-  }
+  // if (!resTeam?.status) {
+  //   return {
+  //     status: false,
+  //     message: resTeam?.message,
+  //   };
+  // }
 
   return {
     status: true,
