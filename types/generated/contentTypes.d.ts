@@ -493,6 +493,46 @@ export interface ApiCountryCountry extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiEventAffiliateEventAffiliate
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'event_affiliates';
+  info: {
+    description: '';
+    displayName: 'EventAffiliates';
+    pluralName: 'event-affiliates';
+    singularName: 'event-affiliate';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    event_id: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
+    expiration_date: Schema.Attribute.DateTime;
+    id_affiliate: Schema.Attribute.String;
+    isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::event-affiliate.event-affiliate'
+    > &
+      Schema.Attribute.Private;
+    orders_id: Schema.Attribute.Relation<'oneToMany', 'api::order.order'>;
+    publishedAt: Schema.Attribute.DateTime;
+    state: Schema.Attribute.Enumeration<['val', 'por']>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    value: Schema.Attribute.Decimal;
+  };
+}
+
 export interface ApiEventDiscountCodeEventDiscountCode
   extends Struct.CollectionTypeSchema {
   collectionName: 'event_discount_codes';
@@ -816,6 +856,10 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     discount_price: Schema.Attribute.Decimal;
+    event_affiliate_id: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::event-affiliate.event-affiliate'
+    >;
     event_discount_code_id: Schema.Attribute.Relation<
       'oneToOne',
       'api::event-discount-code.event-discount-code'
@@ -869,6 +913,7 @@ export interface ApiServiceFeeServiceFee extends Struct.SingleTypeSchema {
       'api::service-fee.service-fee'
     > &
       Schema.Attribute.Private;
+    minRefundable: Schema.Attribute.Decimal;
     percentageFee: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     refundable: Schema.Attribute.Decimal;
@@ -1538,6 +1583,7 @@ declare module '@strapi/strapi' {
       'api::artist.artist': ApiArtistArtist;
       'api::category.category': ApiCategoryCategory;
       'api::country.country': ApiCountryCountry;
+      'api::event-affiliate.event-affiliate': ApiEventAffiliateEventAffiliate;
       'api::event-discount-code.event-discount-code': ApiEventDiscountCodeEventDiscountCode;
       'api::event-location.event-location': ApiEventLocationEventLocation;
       'api::event-restriction.event-restriction': ApiEventRestrictionEventRestriction;

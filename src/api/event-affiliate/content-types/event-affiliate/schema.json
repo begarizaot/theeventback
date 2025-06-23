@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event_affiliates",
+  "info": {
+    "singularName": "event-affiliate",
+    "pluralName": "event-affiliates",
+    "displayName": "EventAffiliates",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "id_affiliate": {
+      "type": "string"
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": [
+        "val",
+        "por"
+      ]
+    },
+    "value": {
+      "type": "decimal"
+    },
+    "expiration_date": {
+      "type": "datetime"
+    },
+    "event_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::event.event"
+    },
+    "user_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    },
+    "orders_id": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order.order",
+      "mappedBy": "event_affiliate_id"
+    }
+  }
+}
