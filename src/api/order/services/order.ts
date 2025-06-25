@@ -35,6 +35,7 @@ import {
 } from "./services";
 import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
 import { onValidateTeamAccess } from "../../team-access/services/services";
+import { EventAffiliateFindOne } from "../../event-affiliate/services/services";
 
 const { validateEmail } = useSendGridClient();
 const { getUniqueObjects } = useGeneral();
@@ -635,9 +636,9 @@ export default factories.createCoreService(table, () => ({
   },
   async postCreateOrder({ body }) {
     try {
-      const { userData, eventId, tickets, values, payment } = body;
+      const { userData, eventId, tickets, values, payment, aff } = body;
 
-      const eventData = await EventFindOne(
+      const eventData:any = await EventFindOne(
         {},
         {
           ...filterGeneral,
@@ -664,6 +665,20 @@ export default factories.createCoreService(table, () => ({
       }
 
       const valUser = await validateUser(userData);
+
+      let affiliateId = null;
+      if (aff) {
+        affiliateId = await EventAffiliateFindOne(null, {
+          event_id: {
+            id: eventData?.id,
+          },
+          id_affiliate: aff,
+          isVisible: true,
+          expiration_date: {
+            $gte: new Date(),
+          }
+        });
+      }
 
       let codeDiscount = null;
       if (userData.discountCode) {
@@ -699,6 +714,7 @@ export default factories.createCoreService(table, () => ({
         event_id: eventData?.id,
         event_discount_code_id: codeDiscount?.id || null,
         users_id: valUser.id,
+        event_affiliate_id: affiliateId?.id || null,
       });
       if (!order) {
         return {

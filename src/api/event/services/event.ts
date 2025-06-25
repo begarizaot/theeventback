@@ -169,7 +169,7 @@ export default factories.createCoreService(table, () => ({
       const service = await EventFindPage(
         {
           ...(search?.length > 2 && {
-            $or: [{ name: { $containsi: search || "" } }],
+            $and: [{ name: { $containsi: search || "" } }],
           }),
           ...(dataFilter && {
             $or: [
