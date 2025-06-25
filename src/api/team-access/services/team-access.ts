@@ -17,6 +17,7 @@ import {
   UserFindOne,
 } from "../../../extensions/users-permissions/services/services";
 import { CountryFindOne } from "../../country/services/services";
+import { SuperAdminFindMany } from "../../super-admin/services/services";
 
 const onValidateData = async (user: any, eventId: any) => {
   if (!user) {
@@ -101,6 +102,8 @@ export default factories.createCoreService(table, () => ({
 
       const { search, page, size } = query;
 
+      const superAdmins = await SuperAdminFindMany();
+
       const team = await TeamAccessFindPage(
         {
           ...populateTeamAccess,
@@ -129,6 +132,9 @@ export default factories.createCoreService(table, () => ({
               { event_id: { name: { $containsi: search || "" } } },
             ],
           }),
+          user_id: {
+            $notIn: superAdmins.map((item) => item.id),
+          },
         },
         {
           page: page || 1,
