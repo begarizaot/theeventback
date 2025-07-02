@@ -69,7 +69,7 @@ export default {
       return {
         status: false,
         data: null,
-        message: "User not found",
+        message: "User not found or invalid token",
       };
     }
   },
@@ -98,7 +98,7 @@ export default {
       return {
         status: false,
         data: null,
-        message: "User not found",
+        message: "Error validating email",
       };
     }
   },
@@ -152,7 +152,7 @@ export default {
       return {
         status: false,
         data: null,
-        message: "User not found",
+        message: "User not found or invalid type",
       };
     }
   },
@@ -201,7 +201,7 @@ export default {
       return {
         status: false,
         data: null,
-        message: "User not found",
+        message: "Error validating OTP",
       };
     }
   },
@@ -255,7 +255,7 @@ export default {
       return {
         status: false,
         data: null,
-        message: "User not found",
+        message: "Error registering user or invalid data",
       };
     }
   },
