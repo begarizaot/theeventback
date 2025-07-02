@@ -172,7 +172,7 @@ export default factories.createCoreService(table, () => ({
             $and: [{ name: { $containsi: search || "" } }],
           }),
           ...(dataFilter && {
-            $or: [
+            $and: [
               ...(dataFilter.category
                 ? [
                     {
