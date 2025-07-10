@@ -11,6 +11,7 @@ import {
 } from "./services";
 import { EventFindOne } from "../../event/services/services";
 import { onValidateTeamAccess } from "../../team-access/services/services";
+import { useMoment } from "../../../hooks";
 
 const table = "api::event-ticket.event-ticket";
 
@@ -83,8 +84,8 @@ export default factories.createCoreService(table, () => ({
         stock: body?.quantity || 0,
         ...(body?.startEndDate
           ? {
-              start_date: body?.startEndDate[0],
-              end_date: body?.startEndDate[1],
+              start_date: useMoment(body?.startEndDate[0]),
+              end_date: useMoment(body?.startEndDate[1]),
             }
           : {
               start_date: eventData?.data?.start_date,
@@ -142,8 +143,8 @@ export default factories.createCoreService(table, () => ({
         ...body,
         stock: body?.stock || 0,
         ...(body?.startEndDate && {
-          start_date: body?.startEndDate[0],
-          end_date: body?.startEndDate[1],
+          start_date: useMoment(body?.startEndDate[0]),
+          end_date: useMoment(body?.startEndDate[1]),
         }),
       });
 
