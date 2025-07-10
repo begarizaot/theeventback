@@ -20,7 +20,7 @@ import {
 } from "../../team-access/services/services";
 import { OrderAnalityEvent } from "../../order/services/services";
 import { EventLocationFindCreate } from "../../event-location/services/services";
-import { useGooglecCloud } from "../../../hooks";
+import { useGooglecCloud, useMoment } from "../../../hooks";
 import { useCrypto } from "../../../hooks/useCrypto";
 import { EventTicketCreate } from "../../event-ticket/services/services";
 import { SuperAdminFindMany } from "../../super-admin/services/services";
@@ -320,8 +320,8 @@ export default factories.createCoreService(table, () => ({
           event_restriction_id: body?.age_restrictions,
         }),
         ...(body?.startEndDate && {
-          start_date: body?.startEndDate[0],
-          end_date: body?.startEndDate[1],
+          start_date: useMoment(body?.startEndDate[0]),
+          end_date: useMoment(body?.startEndDate[1]),
         }),
         users_id: user.id,
         event_status_id: 1,
@@ -350,8 +350,8 @@ export default factories.createCoreService(table, () => ({
             stock: item?.quantity,
             ...(item?.startEndDate
               ? {
-                  start_date: item?.startEndDate[0],
-                  end_date: item?.startEndDate[1],
+                  start_date: useMoment(item?.startEndDate[0]),
+                  end_date: useMoment(item?.startEndDate[1]),
                 }
               : {
                   start_date: eventData?.start_date,
@@ -471,8 +471,8 @@ export default factories.createCoreService(table, () => ({
             locationData?.id || eventData?.data?.event_locations_id,
         }),
         ...(body?.startEndDate && {
-          start_date: body?.startEndDate[0],
-          end_date: body?.startEndDate[1],
+          start_date: useMoment(body?.startEndDate[0]),
+          end_date: useMoment(body?.startEndDate[1]),
         }),
       });
 
