@@ -13,14 +13,17 @@ import {
   populate,
 } from "./services";
 import {
+  onValidateTeamAccess,
+  TeamAccessCreate,
   TeamAccessFindMany,
   TeamAccessFindOne,
 } from "../../team-access/services/services";
 import { OrderAnalityEvent } from "../../order/services/services";
 import { EventLocationFindCreate } from "../../event-location/services/services";
-import { useGooglecCloud } from "../../../hooks";
+import { useGooglecCloud, useMoment } from "../../../hooks";
 import { useCrypto } from "../../../hooks/useCrypto";
 import { EventTicketCreate } from "../../event-ticket/services/services";
+import { SuperAdminFindMany } from "../../super-admin/services/services";
 
 const { uploadImage } = useGooglecCloud();
 const { encrypt } = useCrypto();
@@ -47,10 +50,12 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-  if (user.id != eventData?.users_id.id) {
+  const resTeam = await onValidateTeamAccess({ user, eventData });
+
+  if (!resTeam?.status) {
     return {
       status: false,
-      message: "You are not the owner of this event",
+      message: resTeam?.message,
     };
   }
 
@@ -145,7 +150,7 @@ export default factories.createCoreService(table, () => ({
         };
       });
       return {
-        data: [...service],
+        data: [...service, ...resServiceTeam],
         status: true,
       };
     } catch (e) {
@@ -163,12 +168,11 @@ export default factories.createCoreService(table, () => ({
     try {
       const service = await EventFindPage(
         {
-          ...filterGeneral,
           ...(search?.length > 2 && {
-            $or: [{ name: { $containsi: search || "" } }],
+            $and: [{ name: { $containsi: search || "" } }],
           }),
           ...(dataFilter && {
-            $or: [
+            $and: [
               ...(dataFilter.category
                 ? [
                     {
@@ -180,6 +184,7 @@ export default factories.createCoreService(table, () => ({
                 : []),
             ],
           }),
+          ...filterGeneral,
         },
         {
           pageSize: size,
@@ -251,20 +256,8 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      if (event.users_id.id == user.id) {
-        return {
-          data: event,
-          status: true,
-        };
-      }
-
-      const service: any = await TeamAccessFindOne({
-        user_id: {
-          id: user.id,
-        },
-      });
       return {
-        data: service.event_id,
+        data: event,
         status: true,
       };
     } catch (e) {
@@ -327,8 +320,8 @@ export default factories.createCoreService(table, () => ({
           event_restriction_id: body?.age_restrictions,
         }),
         ...(body?.startEndDate && {
-          start_date: body?.startEndDate[0],
-          end_date: body?.startEndDate[1],
+          start_date: useMoment(body?.startEndDate[0]),
+          end_date: useMoment(body?.startEndDate[1]),
         }),
         users_id: user.id,
         event_status_id: 1,
@@ -357,8 +350,8 @@ export default factories.createCoreService(table, () => ({
             stock: item?.quantity,
             ...(item?.startEndDate
               ? {
-                  start_date: item?.startEndDate[0],
-                  end_date: item?.startEndDate[1],
+                  start_date: useMoment(item?.startEndDate[0]),
+                  end_date: useMoment(item?.startEndDate[1]),
                 }
               : {
                   start_date: eventData?.start_date,
@@ -380,6 +373,20 @@ export default factories.createCoreService(table, () => ({
         id_event: eventEncrypt,
         event_tickets_ids: listTickets,
       });
+
+      const superAdmins = await SuperAdminFindMany();
+
+      if (superAdmins && superAdmins?.length > 0) {
+        await Promise.all(
+          superAdmins.map(async (item: any) => {
+            TeamAccessCreate({
+              event_id: eventData?.id,
+              user_id: item?.users_id?.id,
+              type_role_id: 1,
+            });
+          })
+        );
+      }
 
       return {
         message: "create event successfully",
@@ -464,8 +471,8 @@ export default factories.createCoreService(table, () => ({
             locationData?.id || eventData?.data?.event_locations_id,
         }),
         ...(body?.startEndDate && {
-          start_date: body?.startEndDate[0],
-          end_date: body?.startEndDate[1],
+          start_date: useMoment(body?.startEndDate[0]),
+          end_date: useMoment(body?.startEndDate[1]),
         }),
       });
 

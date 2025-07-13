@@ -29,6 +29,10 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::team-type-role.team-type-role"
+    },
+    "isAdmin": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

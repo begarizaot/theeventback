@@ -4,8 +4,10 @@
 
 import { factories } from "@strapi/strapi";
 import {
+  onValidateTeamAccess,
   populateTeamAccess,
   TeamAccessCreate,
+  TeamAccessFindOne,
   TeamAccessFindPage,
   TeamAccessUpdate,
 } from "./services";
@@ -15,6 +17,7 @@ import {
   UserFindOne,
 } from "../../../extensions/users-permissions/services/services";
 import { CountryFindOne } from "../../country/services/services";
+import { SuperAdminFindMany } from "../../super-admin/services/services";
 
 const onValidateData = async (user: any, eventId: any) => {
   if (!user) {
@@ -38,12 +41,14 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-    if (user.id != eventData?.users_id.id) {
-      return {
-        status: false,
-        message: "You are not the owner of this event",
-      };
-    }
+  // const resTeam = await onValidateTeamAccess({user, eventData});
+
+  // if (!resTeam?.status) {
+  //   return {
+  //     status: false,
+  //     message: resTeam?.message,
+  //   };
+  // }
 
   return {
     status: true,
@@ -53,6 +58,37 @@ const onValidateData = async (user: any, eventId: any) => {
 
 const table = "api::team-access.team-access";
 export default factories.createCoreService(table, () => ({
+  async getTeamAccess({ user, params }) {
+    try {
+      const eventData: any = await onValidateData(user, params.eventId);
+
+      if (!eventData?.status) {
+        return {
+          status: false,
+          message: eventData?.message,
+        };
+      }
+
+      const serviceTeam: any = await TeamAccessFindOne({
+        user_id: {
+          id: user.id,
+        },
+        event_id: {
+          id: eventData?.data?.id,
+        },
+      });
+
+      return {
+        data: serviceTeam && serviceTeam?.isAdmin,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
   async getListTeamAccess({ user, params, query }) {
     try {
       const eventData: any = await onValidateData(user, params.eventId);
@@ -65,6 +101,8 @@ export default factories.createCoreService(table, () => ({
       }
 
       const { search, page, size } = query;
+
+      const superAdmins = await SuperAdminFindMany();
 
       const team = await TeamAccessFindPage(
         {
@@ -94,6 +132,9 @@ export default factories.createCoreService(table, () => ({
               { event_id: { name: { $containsi: search || "" } } },
             ],
           }),
+          user_id: {
+            $notIn: superAdmins.map((item) => item.id),
+          },
         },
         {
           page: page || 1,

@@ -59,5 +59,13 @@ module.exports = {
       path: "/order/postCreateOrderFree",
       handler: "order.postCreateOrderFree",
     },
+    {
+      method: "POST",
+      path: "/order/postSendMail/:orderId",
+      handler: "order.postSendMail",
+      config: {
+        auth: false,
+      },
+    },
   ],
 };

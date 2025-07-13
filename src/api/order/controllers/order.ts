@@ -75,4 +75,11 @@ export default factories.createCoreController(table, ({ strapi }) => ({
     } = ctx;
     return await strapi.service(table).postCreateOrderFree({ user, body });
   },
+  async postSendMail(ctx) {
+    const {
+      params,
+      request: { body },
+    } = ctx;
+    return await strapi.service(table).postSendMail({ params, body });
+  },
 }));

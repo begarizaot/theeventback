@@ -10,6 +10,8 @@ import {
   EventTickettUpdate,
 } from "./services";
 import { EventFindOne } from "../../event/services/services";
+import { onValidateTeamAccess } from "../../team-access/services/services";
+import { useMoment } from "../../../hooks";
 
 const table = "api::event-ticket.event-ticket";
 
@@ -35,10 +37,12 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-  // if (user.id != eventData?.users_id.id) {
+  // const resTeam = await onValidateTeamAccess({ user, eventData });
+
+  // if (!resTeam?.status) {
   //   return {
   //     status: false,
-  //     message: "You are not the owner of this event",
+  //     message: resTeam?.message,
   //   };
   // }
 
@@ -80,8 +84,8 @@ export default factories.createCoreService(table, () => ({
         stock: body?.quantity || 0,
         ...(body?.startEndDate
           ? {
-              start_date: body?.startEndDate[0],
-              end_date: body?.startEndDate[1],
+              start_date: useMoment(body?.startEndDate[0]),
+              end_date: useMoment(body?.startEndDate[1]),
             }
           : {
               start_date: eventData?.data?.start_date,
@@ -139,8 +143,8 @@ export default factories.createCoreService(table, () => ({
         ...body,
         stock: body?.stock || 0,
         ...(body?.startEndDate && {
-          start_date: body?.startEndDate[0],
-          end_date: body?.startEndDate[1],
+          start_date: useMoment(body?.startEndDate[0]),
+          end_date: useMoment(body?.startEndDate[1]),
         }),
       });
 

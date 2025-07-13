@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "super_admins",
+  "info": {
+    "singularName": "super-admin",
+    "pluralName": "super-admins",
+    "displayName": "superAdmin",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "users_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

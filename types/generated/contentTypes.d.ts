@@ -493,6 +493,46 @@ export interface ApiCountryCountry extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiEventAffiliateEventAffiliate
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'event_affiliates';
+  info: {
+    description: '';
+    displayName: 'EventAffiliates';
+    pluralName: 'event-affiliates';
+    singularName: 'event-affiliate';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    event_id: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
+    expiration_date: Schema.Attribute.DateTime;
+    id_affiliate: Schema.Attribute.String;
+    isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::event-affiliate.event-affiliate'
+    > &
+      Schema.Attribute.Private;
+    orders_id: Schema.Attribute.Relation<'oneToMany', 'api::order.order'>;
+    publishedAt: Schema.Attribute.DateTime;
+    state: Schema.Attribute.Enumeration<['val', 'por']>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    value: Schema.Attribute.Decimal;
+  };
+}
+
 export interface ApiEventDiscountCodeEventDiscountCode
   extends Struct.CollectionTypeSchema {
   collectionName: 'event_discount_codes';
@@ -715,7 +755,9 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
       Schema.Attribute.Private;
+    map_img_url: Schema.Attribute.String;
     name: Schema.Attribute.String;
+    opening_extension_date: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'name'>;
     start_date: Schema.Attribute.DateTime;
@@ -814,6 +856,10 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     discount_price: Schema.Attribute.Decimal;
+    event_affiliate_id: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::event-affiliate.event-affiliate'
+    >;
     event_discount_code_id: Schema.Attribute.Relation<
       'oneToOne',
       'api::event-discount-code.event-discount-code'
@@ -867,12 +913,46 @@ export interface ApiServiceFeeServiceFee extends Struct.SingleTypeSchema {
       'api::service-fee.service-fee'
     > &
       Schema.Attribute.Private;
+    minRefundable: Schema.Attribute.Decimal;
     percentageFee: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     refundable: Schema.Attribute.Decimal;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSuperAdminSuperAdmin extends Struct.CollectionTypeSchema {
+  collectionName: 'super_admins';
+  info: {
+    description: '';
+    displayName: 'superAdmin';
+    pluralName: 'super-admins';
+    singularName: 'super-admin';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::super-admin.super-admin'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -892,6 +972,7 @@ export interface ApiTeamAccessTeamAccess extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     event_id: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
+    isAdmin: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     isVisible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1502,6 +1583,7 @@ declare module '@strapi/strapi' {
       'api::artist.artist': ApiArtistArtist;
       'api::category.category': ApiCategoryCategory;
       'api::country.country': ApiCountryCountry;
+      'api::event-affiliate.event-affiliate': ApiEventAffiliateEventAffiliate;
       'api::event-discount-code.event-discount-code': ApiEventDiscountCodeEventDiscountCode;
       'api::event-location.event-location': ApiEventLocationEventLocation;
       'api::event-restriction.event-restriction': ApiEventRestrictionEventRestriction;
@@ -1512,6 +1594,7 @@ declare module '@strapi/strapi' {
       'api::home.home': ApiHomeHome;
       'api::order.order': ApiOrderOrder;
       'api::service-fee.service-fee': ApiServiceFeeServiceFee;
+      'api::super-admin.super-admin': ApiSuperAdminSuperAdmin;
       'api::team-access.team-access': ApiTeamAccessTeamAccess;
       'api::team-type-role.team-type-role': ApiTeamTypeRoleTeamTypeRole;
       'api::ticket.ticket': ApiTicketTicket;

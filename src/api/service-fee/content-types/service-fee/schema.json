@@ -7,7 +7,9 @@
     "displayName": "ServiceFee",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "fixedFee": {
       "type": "decimal"
@@ -19,6 +21,9 @@
       "type": "decimal"
     },
     "desiredProfit": {
+      "type": "decimal"
+    },
+    "minRefundable": {
       "type": "decimal"
     }
   }

@@ -91,6 +91,9 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
       tickets_id: {
         populate: ["event_ticket_id"],
       },
+      event_affiliate_id: {
+        fields: ["state", "value"],
+      },
     },
     fields: [
       "base_price",
@@ -112,11 +115,14 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
     tableSales: createGroupStructure(),
     ticketSales: createGroupStructure(),
     ticketComp: createGroupStructure(),
+    refundable: createGroupStructure(),
+    affiliate: createGroupStructure(),
   };
 
   let totalBasePrice = 0;
   let totalTickets = 0;
   let totalScanned = 0;
+  let totalRefundable = 0;
 
   let totalDiscountValue = 0;
   let totalDiscountQuantity = 0;
@@ -147,9 +153,27 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
         totalDiscountValue += discount;
         totalDiscountQuantity += 1;
       }
-      
+
+      const base = order.base_price || 0;
+      const netBase = base - discount;
+
       !order.freeOrder &&
         (totalBasePrice += order.base_price - Number(discount || 0) || 0);
+
+      // ✅ Calcular comisión o valor de afiliado
+      if (order.event_affiliate_id && !order.freeOrder) {
+        const { state, value } = order.event_affiliate_id;
+        let affiliateAmount = 0;
+
+        if (state === "por") {
+          affiliateAmount = (netBase * value) / 100;
+        } else if (state === "val") {
+          affiliateAmount = value;
+        }
+
+        groups.affiliate.totalValue += affiliateAmount;
+        groups.affiliate.totalQuantity += 1;
+      }
 
       order.tickets_id?.forEach((ticket: any) => {
         const hasTable = ticket?.table;
@@ -167,6 +191,11 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
         } else {
           addToGroup(groups.ticketSales, ticket);
         }
+      });
+    } else {
+      totalRefundable += 1;
+      order.tickets_id?.forEach((ticket: any) => {
+        addToGroup(groups.refundable, ticket);
       });
     }
   });
@@ -213,6 +242,17 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
         type: "Discounts",
         totalQuantity: totalDiscountQuantity,
         totalValue: totalDiscountValue.toFixed(2),
+      },
+      {
+        type: "Affiliate",
+        totalQuantity: groups.affiliate.totalQuantity,
+        totalValue: groups.affiliate.totalValue.toFixed(2),
+        icon: "pi-percentage",
+      },
+      {
+        type: "Refundable",
+        ...formatGroup(groups.refundable),
+        icon: "pi-chart-bar",
       },
     ],
   };

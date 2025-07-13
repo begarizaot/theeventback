@@ -71,6 +71,12 @@
     "freeOrder": {
       "type": "boolean",
       "default": false
+    },
+    "event_affiliate_id": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::event-affiliate.event-affiliate",
+      "inversedBy": "orders_id"
     }
   }
 }

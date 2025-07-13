@@ -36,7 +36,11 @@ export default factories.createCoreService(table, () => ({
               $or: [
                 {
                   type_roles_ids: {
-                    id: !userAdmin ? team.type_role_id.id : 3,
+                    id: !userAdmin
+                      ? team.isAdmin
+                        ? 3
+                        : team.type_role_id.id
+                      : 3,
                   },
                 },
                 {

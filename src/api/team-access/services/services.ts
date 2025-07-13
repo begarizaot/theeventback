@@ -1,3 +1,5 @@
+import { AdminFindMany } from "../../admin/services/services";
+
 export const populateTeamAccess: any = {
   event_id: {
     populate: {
@@ -17,6 +19,35 @@ export const populateTeamAccess: any = {
   type_role_id: {
     fields: ["name"],
   },
+};
+
+export const onValidateTeamAccess = async ({ user, eventData }) => {
+  if (user.id != eventData?.users_id.id) {
+    const serviceTeam:any = await TeamAccessFindOne({
+      user_id: {
+        id: user.id,
+      },
+      event_id: {
+        id: eventData.id,
+      },
+    });
+
+    if (serviceTeam && serviceTeam?.isAdmin) {
+      return {
+        status: true,
+      };
+    }
+
+    return {
+      status: false,
+      message: "You are not the owner of this event",
+    };
+  }
+
+  return {
+    status: true,
+    message: "",
+  };
 };
 
 export const TeamAccessFindMany = async (filters = {}, sort = {}) => {

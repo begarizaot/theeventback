@@ -3,17 +3,20 @@
  */
 
 import { factories } from "@strapi/strapi";
-import {
-  DiscountCodeCreate,
-  DiscountCodeUpdate,
-  EventDiscountCodeFindOne,
-  EventDiscountCodeFindOneGeneral,
-  EventDiscountCodeFindPage,
-} from "./services";
 import { EventFindOne } from "../../event/services/services";
-import { onValidateTeamAccess } from "../../team-access/services/services";
+import {
+  calculateTotal,
+  EventAffiliateCreate,
+  EventAffiliateFindOne,
+  EventAffiliateFindPage,
+  EventAffiliateUpdate,
+} from "./services";
+import { UserFindOne } from "../../../extensions/users-permissions/services/services";
+import { useCrypto } from "../../../hooks/useCrypto";
 
-const table = "api::event-discount-code.event-discount-code";
+const { encrypt } = useCrypto();
+
+const table = "api::event-affiliate.event-affiliate";
 
 const onValidateData = async (user: any, eventId: any) => {
   if (!user) {
@@ -53,7 +56,7 @@ const onValidateData = async (user: any, eventId: any) => {
 };
 
 export default factories.createCoreService(table, () => ({
-  async getListDiscountCode({ params, user, query }) {
+  async getListEventAffiliate({ params, user, query }) {
     try {
       const eventData: any = await onValidateData(user, params.eventId);
 
@@ -66,7 +69,7 @@ export default factories.createCoreService(table, () => ({
 
       const { search, page, size } = query;
 
-      const listCode = await EventDiscountCodeFindPage(
+      const listCode = await EventAffiliateFindPage(
         null,
         {
           event_id: {
@@ -86,7 +89,10 @@ export default factories.createCoreService(table, () => ({
       );
 
       return {
-        data: listCode.results,
+        data: listCode.results.map((item: any) => {
+          item.totalSales = calculateTotal(item);
+          return item;
+        }),
         pagination: listCode.pagination,
         status: true,
       };
@@ -97,45 +103,7 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
-  async postEventsDiscountCode({ params, body }) {
-    try {
-      const service = await EventDiscountCodeFindOne(null, {
-        event_id: {
-          id_event: params.id,
-        },
-        name: {
-          $eqi: body.code ?? "",
-        },
-        isVisible: true,
-      });
-      let value = 0;
-
-      if (service) {
-        const stock = service.stock <= service.stock_max;
-        service.state == "val" &&
-          (value = body.value - (stock ? service.value : 0));
-        service.state == "por" &&
-          (value = Number(
-            (
-              body.value -
-              (body.value * (stock ? service.value : 0)) / 100
-            ).toFixed(2)
-          ));
-      }
-
-      return {
-        data: value,
-        message: value <= 0 ? "Discount code is not valid" : "",
-        status: true,
-      };
-    } catch (e) {
-      return {
-        status: false,
-        message: `${e?.message || ""}`,
-      };
-    }
-  },
-  async postCreateDiscountCode({ user, params, body }) {
+  async postCreateEventAffiliate({ user, params, body }) {
     try {
       const eventData: any = await onValidateData(user, params.eventId);
 
@@ -146,26 +114,27 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const codeExict = await EventDiscountCodeFindOneGeneral(null, {
-        event_id: {
-          id: eventData?.data?.id,
-        },
-        name: {
-          $eqi: body.name ?? "",
-        },
+      const userData = await UserFindOne({
+        $or: [
+          { email: { $eqi: body.email || "" } },
+          { phoneNumber: { $eqi: body.phoneNumber || "" } },
+        ],
       });
 
-      if (codeExict) {
-        return {
-          status: false,
-          message: "Code already exists",
-        };
-      }
+      const affiliate = await EventAffiliateCreate({
+        ...body,
+        event_id: eventData?.data?.id,
+        user_id: userData?.id,
+        expiration_date: body?.expirationDate,
+      });
 
-      await DiscountCodeCreate({ ...body, event_id: eventData?.data?.id });
+      const affiliateEncrypt = encrypt(`affiliate_${affiliate.id}`);
+      await EventAffiliateUpdate(affiliate.id, {
+        id_affiliate: affiliateEncrypt,
+      });
 
       return {
-        message: "Create team access successfully",
+        message: "Create affiliate successfully",
         status: true,
       };
     } catch (e) {
@@ -175,7 +144,7 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
-  async putUpdateDiscountCode({ user, params, body }) {
+  async putUpdateEventAffiliate({ user, params, body }) {
     try {
       const eventData: any = await onValidateData(user, params.eventId);
 
@@ -195,23 +164,12 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const codeExict = await EventDiscountCodeFindOneGeneral(null, {
-        event_id: {
-          id: eventData?.data?.id,
-        },
-        name: {
-          $eqi: body?.name ?? "",
-        },
+      await EventAffiliateUpdate(id, {
+        ...body,
+        ...(body?.expirationDate && {
+          expiration_date: body?.expirationDate,
+        }),
       });
-
-      if (codeExict) {
-        return {
-          status: false,
-          message: "Code already exists",
-        };
-      }
-
-      await DiscountCodeUpdate(id, body);
 
       return {
         message: "Update team access successfully",

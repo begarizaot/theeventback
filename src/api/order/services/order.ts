@@ -34,6 +34,8 @@ import {
   OrderUpdate,
 } from "./services";
 import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
+import { onValidateTeamAccess } from "../../team-access/services/services";
+import { EventAffiliateFindOne } from "../../event-affiliate/services/services";
 
 const { validateEmail } = useSendGridClient();
 const { getUniqueObjects } = useGeneral();
@@ -72,12 +74,14 @@ const onValidateData = async (user: any, eventId: any) => {
     };
   }
 
-  if (user.id != eventData?.users_id.id) {
-    return {
-      status: false,
-      message: "You are not the owner of this event",
-    };
-  }
+  // const resTeam = await onValidateTeamAccess({user, eventData});
+
+  // if (!resTeam?.status) {
+  //   return {
+  //     status: false,
+  //     message: resTeam?.message,
+  //   };
+  // }
 
   return {
     status: true,
@@ -159,14 +163,14 @@ export default factories.createCoreService(table, () => ({
         }
       );
 
-      if ((!order || !order.stripe_id) && !order.freeOrder) {
+      if ((!order || !order?.stripe_id) && !order?.freeOrder) {
         return {
           status: false,
           message: "Order not found or already paid",
         };
       }
 
-      if (!order.freeOrder) {
+      if (!order?.freeOrder) {
         const paymentInte = await retrievePaymentIntents(order?.stripe_id);
         if (!paymentInte?.status?.includes("succe")) {
           return {
@@ -331,6 +335,9 @@ export default factories.createCoreService(table, () => ({
     try {
       const order = await OrderFindPage(
         {
+          event_id: {
+            id: eventData?.data?.id,
+          },
           $or: [{ freeOrder: { $eq: false } }, { freeOrder: { $null: true } }],
           ...(search?.length > 2 && {
             $or: [
@@ -394,6 +401,9 @@ export default factories.createCoreService(table, () => ({
       const order = await OrderFindPage(
         {
           freeOrder: true,
+          event_id: {
+            id: eventData?.data?.id,
+          },
           ...(search?.length > 2 && {
             $or: [
               { users_id: { email: { $containsi: search || "" } } },
@@ -489,6 +499,101 @@ export default factories.createCoreService(table, () => ({
       };
     }
   },
+  async postSendMail({ params, body }) {
+    try {
+      const { orderId } = params;
+
+      const order = await OrderFindOne(
+        {
+          order_id: orderId,
+        },
+        {
+          event_id: {
+            populate: "*",
+          },
+          users_id: {
+            populate: "*",
+          },
+          tickets_id: {
+            populate: ["event_ticket_id"],
+          },
+        }
+      );
+
+      if ((!order || !order?.stripe_id) && !order?.freeOrder) {
+        return {
+          status: false,
+          message: "Order not found or already paid",
+        };
+      }
+
+      if (!order?.freeOrder) {
+        const paymentInte = await retrievePaymentIntents(order?.stripe_id);
+        if (!paymentInte?.status?.includes("succe")) {
+          return {
+            status: false,
+            data: paymentInte,
+            message: "Payment not found",
+          };
+        }
+      }
+
+      const { users_id, event_id, prices, tickets_id, url_pdf } = order as any;
+      const {
+        event_locations_id: locations,
+        event_restriction_id: restriction,
+      } = event_id;
+
+      let pdfUrl = url_pdf;
+      if (!url_pdf) {
+        const pdf = await PdfOrder(event_id, tickets_id);
+        pdfUrl = await uploadPDF(pdf, "order", `order_${orderId}`);
+        OrderUpdate(order.id, {
+          url_pdf: pdfUrl,
+        });
+      }
+
+      await sendSMSPhone(
+        `${body?.country || users_id?.country_id?.code || "+1"}${body?.phoneNumber || users_id?.phoneNumber}`,
+        `Your order for ${event_id?.name} has been successfully created. You can download your tickets from the following link: ${pdfUrl}`
+      );
+
+      await mailSend({
+        email: users_id?.email || "",
+        templateId: process.env.SENDGRID_TEMPLATE_ORDER,
+        dynamicData: {
+          pdfUrl: pdfUrl,
+          ticket_id: order?.order_id,
+          event: {
+            image: event_id?.url_image,
+            name: event_id?.name,
+            date: useMoment(event_id?.start_date).format("dddd, Do MMMM"),
+            time: `${useMoment(event_id?.start_date).format(
+              "HH:mm a"
+            )} - ${useMoment(event_id?.end_date).format("HH:mm a")}`,
+            location: locations.formatted_address,
+            restriction: restriction.title,
+          },
+          tickets: onGroupTickets(tickets_id),
+          refundable: (prices?.totalRefundable || 0).toFixed(2),
+          subTotal: (prices?.discountCode || prices?.subTotal || 0).toFixed(2),
+          serviceFees: (prices?.serviceFee || 0).toFixed(2),
+          proccessingFee: (prices?.processingFee || 0).toFixed(2),
+          total: (prices?.total || 0).toFixed(2),
+        },
+      });
+
+      return {
+        message: "Email sent successfully",
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
   async postCreatePayment({ body }) {
     try {
       const { userData, eventId, tickets, type, paymentId, values } = body;
@@ -502,8 +607,10 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const eventData = await EventFindOne(
-        {},
+      const eventData: any = await EventFindOne(
+        {
+          event_status_id: true,
+        },
         {
           ...filterGeneral,
           id_event: eventId,
@@ -516,6 +623,14 @@ export default factories.createCoreService(table, () => ({
           status: false,
           data: null,
           message: "Event not found",
+        };
+      }
+
+      if (eventData?.event_status_id?.id != 1) {
+        return {
+          status: false,
+          data: null,
+          message: "Event is not active",
         };
       }
 
@@ -543,6 +658,7 @@ export default factories.createCoreService(table, () => ({
       let metadata = {
         name: `${userData.firstName} ${userData.lastName}`,
         email: userData.email,
+        country: userData.country,
         phone: userData.phoneNumber,
         eventName: eventData?.name,
         id_event: eventId,
@@ -573,7 +689,7 @@ export default factories.createCoreService(table, () => ({
   },
   async postCreatePaymentFree({ user, body }) {
     try {
-      const { userData, eventId, tickets, type, paymentId, values } = body;
+      const { userData, eventId, tickets } = body;
 
       const emailVal = await validateEmail(userData.email);
       if (emailVal != "Valid") {
@@ -615,9 +731,9 @@ export default factories.createCoreService(table, () => ({
   },
   async postCreateOrder({ body }) {
     try {
-      const { userData, eventId, tickets, values, payment } = body;
+      const { userData, eventId, tickets, values, payment, aff } = body;
 
-      const eventData = await EventFindOne(
+      const eventData: any = await EventFindOne(
         {},
         {
           ...filterGeneral,
@@ -642,8 +758,23 @@ export default factories.createCoreService(table, () => ({
           message: "The order has been paid",
         };
       }
-
+      
+      delete userData?.phoneNumber;
       const valUser = await validateUser(userData);
+
+      let affiliateId = null;
+      if (aff) {
+        affiliateId = await EventAffiliateFindOne(null, {
+          event_id: {
+            id: eventData?.id,
+          },
+          id_affiliate: aff,
+          isVisible: true,
+          expiration_date: {
+            $gte: new Date(),
+          },
+        });
+      }
 
       let codeDiscount = null;
       if (userData.discountCode) {
@@ -679,6 +810,7 @@ export default factories.createCoreService(table, () => ({
         event_id: eventData?.id,
         event_discount_code_id: codeDiscount?.id || null,
         users_id: valUser.id,
+        event_affiliate_id: affiliateId?.id || null,
       });
       if (!order) {
         return {
@@ -688,11 +820,11 @@ export default factories.createCoreService(table, () => ({
       }
 
       const orderEncrypt = encrypt(`order_${order.id}`);
-      OrderUpdate(order.id, {
+      await OrderUpdate(order.id, {
         order_id: orderEncrypt,
       });
 
-      updatePaymentIntents(payment.id, {
+      await updatePaymentIntents(payment.id, {
         metadata: {
           order_id: orderEncrypt,
         },
@@ -782,7 +914,8 @@ export default factories.createCoreService(table, () => ({
           message: "Event not found",
         };
       }
-
+      
+      delete userData?.phoneNumber;
       const valUser = await validateUser(userData);
 
       // url_pdf
@@ -804,7 +937,7 @@ export default factories.createCoreService(table, () => ({
       }
 
       const orderEncrypt = encrypt(`order_${order.id}`);
-      OrderUpdate(order.id, {
+      await OrderUpdate(order.id, {
         order_id: orderEncrypt,
       });
 
