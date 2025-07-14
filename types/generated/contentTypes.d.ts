@@ -821,6 +821,8 @@ export interface ApiHomeHome extends Struct.SingleTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    automaticCarruselItem: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     categories: Schema.Attribute.Component<'shared.category', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

@@ -29,6 +29,10 @@
     },
     "title": {
       "type": "richtext"
+    },
+    "automaticCarruselItem": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
