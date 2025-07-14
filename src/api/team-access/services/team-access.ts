@@ -133,7 +133,7 @@ export default factories.createCoreService(table, () => ({
             ],
           }),
           user_id: {
-            $notIn: superAdmins.map((item) => item.id),
+            $notIn: superAdmins.map((item: any) => item?.users_id?.id || ""),
           },
         },
         {
