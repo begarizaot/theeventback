@@ -76,5 +76,13 @@ module.exports = {
         auth: false,
       },
     },
+    {
+      method: "POST",
+      path: "/event/postCreateUsers",
+      handler: "event.postCreateUsers",
+      config: {
+        auth: false,
+      },
+    },
   ],
 };

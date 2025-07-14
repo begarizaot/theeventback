@@ -61,6 +61,13 @@ export default factories.createCoreController(table, ({ strapi }) => ({
     } = ctx;
     return await strapi.service(table).postCreateEvent({ user, body });
   },
+  async postCreateUsers(ctx) {
+    const {
+      state: { user },
+      request: { body },
+    } = ctx;
+    return await strapi.service(table).postCreateUsers({ user, body });
+  },
   async putUpdateEvent(ctx) {
     const {
       state: { user },
