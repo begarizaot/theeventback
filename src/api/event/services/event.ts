@@ -18,12 +18,24 @@ import {
   TeamAccessFindMany,
   TeamAccessFindOne,
 } from "../../team-access/services/services";
-import { OrderAnalityEvent } from "../../order/services/services";
+import {
+  OrderAnalityEvent,
+  OrderCreate,
+  OrderUpdate,
+} from "../../order/services/services";
 import { EventLocationFindCreate } from "../../event-location/services/services";
 import { useGooglecCloud, useMoment } from "../../../hooks";
 import { useCrypto } from "../../../hooks/useCrypto";
-import { EventTicketCreate } from "../../event-ticket/services/services";
+import {
+  EventTicketCreate,
+  EventTicketFindOne,
+} from "../../event-ticket/services/services";
 import { SuperAdminFindMany } from "../../super-admin/services/services";
+import {
+  UserFindOne,
+  validateUser,
+} from "../../../extensions/users-permissions/services/services";
+import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
 
 const { uploadImage } = useGooglecCloud();
 const { encrypt } = useCrypto();
@@ -168,21 +180,15 @@ export default factories.createCoreService(table, () => ({
     try {
       const service = await EventFindPage(
         {
-          ...(search?.length > 2 && {
-            $and: [{ name: { $containsi: search || "" } }],
-          }),
+          ...(search?.length > 2 && { name: { $containsi: search || "" } }),
           ...(dataFilter && {
-            $and: [
-              ...(dataFilter.category
-                ? [
-                    {
-                      categories_id: {
-                        title: { $containsi: dataFilter.category || "" },
-                      },
-                    },
-                  ]
-                : []),
-            ],
+            ...(dataFilter.category
+              ? {
+                  categories_id: {
+                    slug: { $containsi: dataFilter.category || "" },
+                  },
+                }
+              : {}),
           }),
           ...filterGeneral,
         },
@@ -519,6 +525,79 @@ export default factories.createCoreService(table, () => ({
 
       return {
         message: "Update event image successfully",
+        status: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
+  async postCreateUsers({ body }) {
+    try {
+      // Procesar los primeros 5 elementos del body
+
+      // const res = await Promise.all(
+      //   body.map(async (item: any, index: number) => {
+      //     try {
+      //       const validatedUserId = await UserFindOne({
+      //         email: { $eqi: item?.users_id || "" },
+      //       });
+
+      //       const infoORder = { ...item };
+      //       delete infoORder.tickets_id;
+      //       const order = await OrderCreate({
+      //         ...infoORder,
+      //         users_id: validatedUserId?.id,
+      //       });
+
+      //       const orderEncrypt = encrypt(`order_${order.id}`);
+      //       await OrderUpdate(order.id, {
+      //         order_id: orderEncrypt,
+      //       });
+
+      //       const ticktsList = await Promise.all(
+      //         item.tickets_id.map(async (ticket) => {
+      //           const eventTicket = await EventTicketFindOne({
+      //             title: { $eqi: ticket?.ticket_type_id || "" },
+      //             event_id: item?.event_id,
+      //           });
+
+      //           delete ticket.ticket_type_id;
+      //           return await TicketCreate(
+      //             {
+      //               ...ticket,
+      //               orders_id: order.id,
+      //               event_ticket_id: eventTicket?.id,
+      //             },
+      //             {},
+      //             ["id"]
+      //           );
+      //         })
+      //       );
+
+      //       await Promise.all(
+      //         ticktsList.map(async (ticket) => {
+      //           return await TicketUpdate(ticket.id, {
+      //             id_ticket: encrypt(`ticket_${ticket.id}`),
+      //           });
+      //         })
+      //       );
+
+      //       return ticktsList;
+      //     } catch (err) {
+      //       console.error(`Error procesando evento ${index + 1}:`, err);
+      //       return null;
+      //     }
+      //   })
+      // );
+
+      return {
+        message: "User added to event successfully",
+        // length: body.length,
+        // data: res,
         status: true,
       };
     } catch (error) {
