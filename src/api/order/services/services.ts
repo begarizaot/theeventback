@@ -259,6 +259,9 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
 
   return {
     eventSales: eventSalesFormatted,
-    scanStats,
+    scanStats: {
+      ...scanStats,
+      ticketSales: formatGroup(groups.ticketSales).ticketsGrouped ?? [],
+    },
   };
 };
