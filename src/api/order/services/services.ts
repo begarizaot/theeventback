@@ -130,6 +130,7 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
 
   const addToGroup = (group, ticket) => {
     const ticketId = ticket.event_ticket_id?.id;
+
     if (!ticketId) return;
 
     if (!group.ticketMap[ticketId]) {
@@ -138,6 +139,7 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
         title: ticket.event_ticket_id.title,
         quantity: 0,
         totalValue: 0,
+        price: ticket.event_ticket_id.price || 0,
       };
     }
 
@@ -212,6 +214,7 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
       title: item.title,
       quantity: item.quantity,
       totalValue: item.totalValue.toFixed(2),
+      price: item.price,
     })),
   });
 
