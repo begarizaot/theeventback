@@ -117,6 +117,7 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
     ticketComp: createGroupStructure(),
     refundable: createGroupStructure(),
     affiliate: createGroupStructure(),
+    scanner: createGroupStructure(),
   };
 
   let totalBasePrice = 0;
@@ -180,7 +181,10 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
         const isScanned = ticket.isScanner === true;
 
         totalTickets += 1;
-        if (isScanned) totalScanned += 1;
+        if (isScanned) {
+          totalScanned += 1;
+          addToGroup(groups.scanner, ticket);
+        }
 
         addToGroup(groups.eventSales, ticket);
 
@@ -261,7 +265,7 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
     eventSales: eventSalesFormatted,
     scanStats: {
       ...scanStats,
-      ticketSales: formatGroup(groups.ticketSales).ticketsGrouped ?? [],
+      ticketSales: formatGroup(groups.scanner).ticketsGrouped ?? [],
     },
   };
 };
