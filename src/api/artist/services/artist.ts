@@ -115,7 +115,7 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const artistEncrypt = encrypt(`artist_${artist.id}`);
+      const artistEncrypt = encrypt(`newArtistId${artist.id}`);
       ArtistUpdate(artist.id, {
         id_artist: artistEncrypt,
       });

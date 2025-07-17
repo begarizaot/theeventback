@@ -371,7 +371,8 @@ export default factories.createCoreService(table, () => ({
         })
       );
 
-      const eventEncrypt = encrypt(`event_${eventData.id}`);
+      const eventEncrypt = encrypt(`newEventId${eventData.id}`);
+      console.log(eventEncrypt)
       const eventDataRes = await EventUpdate(eventData?.id, {
         ...(body?.place && {
           event_locations_id: locationData?.id,
