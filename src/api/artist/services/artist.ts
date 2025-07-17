@@ -117,7 +117,7 @@ export default factories.createCoreService(table, () => ({
       }
 
       const dateString = useMoment().format("DDMMYYYY");
-      const artistEncrypt = encrypt(`newArtistId${artist.id}${dateString}`);
+      const artistEncrypt = encrypt(`artistId${artist.id}${dateString}`);
       ArtistUpdate(artist.id, {
         id_artist: artistEncrypt,
       });
