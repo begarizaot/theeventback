@@ -130,7 +130,7 @@ export default factories.createCoreService(table, () => ({
       });
 
       const dateString = useMoment().format("DDMMYYYY");
-      const affiliateEncrypt = encrypt(`newAffiliateId${affiliate.id}${dateString}`);
+      const affiliateEncrypt = encrypt(`affiliateId${affiliate.id}${dateString}`);
       await EventAffiliateUpdate(affiliate.id, {
         id_affiliate: affiliateEncrypt,
       });

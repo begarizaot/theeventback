@@ -372,7 +372,7 @@ export default factories.createCoreService(table, () => ({
       );
 
       const dateString = useMoment().format("DDMMYYYY");
-      const eventEncrypt = encrypt(`newEventId${eventData.id}${dateString}`);
+      const eventEncrypt = encrypt(`eventId${eventData.id}${dateString}`);
       const eventDataRes = await EventUpdate(eventData?.id, {
         ...(body?.place && {
           event_locations_id: locationData?.id,
