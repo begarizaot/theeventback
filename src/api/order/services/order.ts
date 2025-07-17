@@ -820,7 +820,7 @@ export default factories.createCoreService(table, () => ({
       }
 
       const dateString = useMoment().format("DDMMYYYY");
-      const orderEncrypt = encrypt(`newOrderId${order.id}${dateString}`);
+      const orderEncrypt = encrypt(`orderId${order.id}${dateString}`);
       await OrderUpdate(order.id, {
         order_id: orderEncrypt,
       });
@@ -876,7 +876,7 @@ export default factories.createCoreService(table, () => ({
       await Promise.all(
         ticktsList.map(async (item) => {
           return await TicketUpdate(item.id, {
-            id_ticket: encrypt(`newTicketId${item.id}${dateStringTicket}`),
+            id_ticket: encrypt(`ticketId${item.id}${dateStringTicket}`),
           });
         })
       );
@@ -939,7 +939,7 @@ export default factories.createCoreService(table, () => ({
       }
 
       const dateString = useMoment().format("DDMMYYYY");
-      const orderEncrypt = encrypt(`newOrderId${order.id}${dateString}`);
+      const orderEncrypt = encrypt(`orderId${order.id}${dateString}`);
       await OrderUpdate(order.id, {
         order_id: orderEncrypt,
       });
@@ -989,7 +989,7 @@ export default factories.createCoreService(table, () => ({
       await Promise.all(
         ticktsList.map(async (item) => {
           return await TicketUpdate(item.id, {
-            id_ticket: encrypt(`newTicketId${item.id}${dateStringTicket}`),
+            id_ticket: encrypt(`ticketId${item.id}${dateStringTicket}`),
           });
         })
       );
