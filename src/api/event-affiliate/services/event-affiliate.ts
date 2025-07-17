@@ -128,7 +128,7 @@ export default factories.createCoreService(table, () => ({
         expiration_date: body?.expirationDate,
       });
 
-      const affiliateEncrypt = encrypt(`affiliate_${affiliate.id}`);
+      const affiliateEncrypt = encrypt(`newAffiliateId${affiliate.id}`);
       await EventAffiliateUpdate(affiliate.id, {
         id_affiliate: affiliateEncrypt,
       });
