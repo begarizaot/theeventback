@@ -758,7 +758,7 @@ export default factories.createCoreService(table, () => ({
           message: "The order has been paid",
         };
       }
-      
+
       delete userData?.phoneNumber;
       const valUser = await validateUser(userData);
 
@@ -819,7 +819,8 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const orderEncrypt = encrypt(`newOrderId${order.id}`);
+      const dateString = useMoment().format("DDMMYYYY");
+      const orderEncrypt = encrypt(`newOrderId${order.id}${dateString}`);
       await OrderUpdate(order.id, {
         order_id: orderEncrypt,
       });
@@ -871,10 +872,11 @@ export default factories.createCoreService(table, () => ({
         await bookSeats(eventData.url_map, allSeatIds);
       }
 
+      const dateStringTicket = useMoment().format("DDMMYYYY");
       await Promise.all(
         ticktsList.map(async (item) => {
           return await TicketUpdate(item.id, {
-            id_ticket: encrypt(`newTicketId${item.id}`),
+            id_ticket: encrypt(`newTicketId${item.id}${dateStringTicket}`),
           });
         })
       );
@@ -914,7 +916,7 @@ export default factories.createCoreService(table, () => ({
           message: "Event not found",
         };
       }
-      
+
       delete userData?.phoneNumber;
       const valUser = await validateUser(userData);
 
@@ -936,7 +938,8 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const orderEncrypt = encrypt(`newOrderId${order.id}`);
+      const dateString = useMoment().format("DDMMYYYY");
+      const orderEncrypt = encrypt(`newOrderId${order.id}${dateString}`);
       await OrderUpdate(order.id, {
         order_id: orderEncrypt,
       });
@@ -982,10 +985,11 @@ export default factories.createCoreService(table, () => ({
         await bookSeats(eventData.url_map, allSeatIds);
       }
 
+      const dateStringTicket = useMoment().format("DDMMYYYY");
       await Promise.all(
         ticktsList.map(async (item) => {
           return await TicketUpdate(item.id, {
-            id_ticket: encrypt(`newTicketId${item.id}`),
+            id_ticket: encrypt(`newTicketId${item.id}${dateStringTicket}`),
           });
         })
       );
