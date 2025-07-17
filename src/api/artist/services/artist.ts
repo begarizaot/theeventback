@@ -12,6 +12,7 @@ import {
   filterGeneral,
 } from "./services";
 import { useCrypto } from "../../../hooks/useCrypto";
+import { useMoment } from "../../../hooks";
 
 const { encrypt } = useCrypto();
 
@@ -115,7 +116,8 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const artistEncrypt = encrypt(`newArtistId${artist.id}`);
+      const dateString = useMoment().format("DDMMYYYY");
+      const artistEncrypt = encrypt(`newArtistId${artist.id}${dateString}`);
       ArtistUpdate(artist.id, {
         id_artist: artistEncrypt,
       });

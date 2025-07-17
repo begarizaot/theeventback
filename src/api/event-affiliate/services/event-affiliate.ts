@@ -13,6 +13,7 @@ import {
 } from "./services";
 import { UserFindOne } from "../../../extensions/users-permissions/services/services";
 import { useCrypto } from "../../../hooks/useCrypto";
+import { useMoment } from "../../../hooks";
 
 const { encrypt } = useCrypto();
 
@@ -128,7 +129,8 @@ export default factories.createCoreService(table, () => ({
         expiration_date: body?.expirationDate,
       });
 
-      const affiliateEncrypt = encrypt(`newAffiliateId${affiliate.id}`);
+      const dateString = useMoment().format("DDMMYYYY");
+      const affiliateEncrypt = encrypt(`newAffiliateId${affiliate.id}${dateString}`);
       await EventAffiliateUpdate(affiliate.id, {
         id_affiliate: affiliateEncrypt,
       });
