@@ -199,7 +199,7 @@ export default factories.createCoreService(table, () => ({
       users_id?.phoneNumber &&
         (await sendSMSPhone(
           `${users_id?.country_id?.code || "+1"}${users_id?.phoneNumber}`,
-          `Your order for ${event_id?.name} has been successfully created. You can download your tickets from the following link: ${pdfUrl}`
+          `The Event Jet:Your order for ${event_id?.name} has been processed. View and download your tickets here: ${pdfUrl}`
         ));
 
       await mailSend({

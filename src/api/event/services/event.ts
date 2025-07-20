@@ -554,7 +554,8 @@ export default factories.createCoreService(table, () => ({
       //         users_id: validatedUserId?.id,
       //       });
 
-      //       const orderEncrypt = encrypt(`order_${order.id}`);
+      //       const dateString = useMoment().format("DDMMYYYY");
+      //       const orderEncrypt = encrypt(`orderId${order.id}${dateString}`);
       //       await OrderUpdate(order.id, {
       //         order_id: orderEncrypt,
       //       });
@@ -579,10 +580,11 @@ export default factories.createCoreService(table, () => ({
       //         })
       //       );
 
+      //       const dateStringTicket = useMoment().format("DDMMYYYY");
       //       await Promise.all(
       //         ticktsList.map(async (ticket) => {
       //           return await TicketUpdate(ticket.id, {
-      //             id_ticket: encrypt(`ticket_${ticket.id}`),
+      //             id_ticket: encrypt(`ticketId${ticket.id}${dateStringTicket}`),
       //           });
       //         })
       //       );
