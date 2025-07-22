@@ -27,7 +27,12 @@ export default factories.createCoreController("api::home.home", {
     );
 
     if (data.automaticCarruselItem) {
-      data.eventCarruselItem[0].event_id = service.results[0];
+      data.eventCarruselItem[0] = {
+        title: data.title,
+        description: data.description,
+        ...data.eventCarruselItem[0],
+        event_id: service.results[0],
+      };
     }
 
     return { data };
