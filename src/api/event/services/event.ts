@@ -36,6 +36,7 @@ import {
   validateUser,
 } from "../../../extensions/users-permissions/services/services";
 import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
+import { HomeFindMany } from "../../home/services/services";
 
 const { uploadImage } = useGooglecCloud();
 const { encrypt } = useCrypto();
@@ -81,8 +82,17 @@ const table = "api::event.event";
 export default factories.createCoreService(table, () => ({
   async getEventsHome() {
     try {
+      const data: any = await HomeFindMany();
+      const eventId = data?.eventCarruselItem?.[0]?.isVisible
+        ? data?.eventCarruselItem?.[0]?.event_id?.id
+        : null;
       const service = await EventFindPage(
-        filterGeneral,
+        {
+          ...filterGeneral,
+          id: {
+            $notIn: eventId ? [eventId] : [],
+          },
+        },
         {
           pageSize: 3,
           page: 1,
@@ -91,7 +101,13 @@ export default factories.createCoreService(table, () => ({
           start_date: "asc",
         }
       );
-      return { data: service.results, status: true };
+
+      const results =
+        data?.automaticCarruselItem && !eventId
+          ? service.results.slice(1)
+          : service.results;
+
+      return { data: results, status: true };
     } catch (e) {
       return {
         status: false,
