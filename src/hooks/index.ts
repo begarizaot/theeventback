@@ -5,3 +5,5 @@ export * from "./useStripe";
 export * from "./pdfmake";
 export * from "./useGooglecCloud";
 export * from "./useTwilio";
+export * from "./useCrypto";
+export * from "./useSeats";
