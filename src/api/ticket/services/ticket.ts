@@ -5,7 +5,11 @@
 import { factories } from "@strapi/strapi";
 import { TeamAccessFindOne } from "../../team-access/services/services";
 import { EventFindOne } from "../../event/services/services";
-import { TicketFindOne, TicketUpdate } from "./services";
+import { TicketCreate, TicketFindOne, TicketUpdate } from "./services";
+import { useCrypto, useMoment, useSeats } from "../../../hooks";
+
+const { encrypt } = useCrypto();
+const { bookSeats } = useSeats();
 
 const onValidateUSer = async (user, eventId) => {
   if (!user || !user.id) {
@@ -128,6 +132,58 @@ export default factories.createCoreService(table, () => ({
 
       return {
         message: "Ticket scanned successfully.",
+        status: true,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: `${error?.message || ""}`,
+      };
+    }
+  },
+  async postCreateTicket({ body, params }) {
+    const { orderId } = params;
+    try {
+      let result = body.flatMap((item) => {
+        return Array.from({ length: item?.select ?? 1 }).map((_, i) => {
+          const seatI = item.isTable
+            ? item.seatId?.[i] || null
+            : item.seatId?.[0];
+          const { seatId, select, ...rest } = item;
+          return {
+            ...rest,
+            seatI,
+          };
+        });
+      });;
+
+      const ticktsList = await Promise.all(
+        result.map(async (item) => {
+          return await TicketCreate(
+            {
+              table: null,
+              orders_id: orderId,
+              value: item?.price || 0,
+              event_ticket_id: item?.id,
+            },
+            {},
+            ["id"]
+          );
+        })
+      );
+
+      const dateStringTicket = useMoment().format("DDMMYYYY");
+      await Promise.all(
+        ticktsList.map(async (item) => {
+          console.log("item", item);
+          return await TicketUpdate(item.id, {
+            id_ticket: encrypt(`ticketId${item.id}${dateStringTicket}`),
+          });
+        })
+      );
+
+      return {
+        message: "Tickets created successfully.",
         status: true,
       };
     } catch (error) {

@@ -836,10 +836,10 @@ export default factories.createCoreService(table, () => ({
         result = tickets
           .filter((item) => Array.isArray(item.seatId))
           .flatMap((item) => {
-            return Array.from({ length: item.select }).map((_, i) => {
+            return Array.from({ length: item?.select ?? 1 }).map((_, i) => {
               const seatI = item.isTable
-                ? item.seatId[i] || null
-                : item.seatId[0];
+                ? item.seatId?.[i] || null
+                : item.seatId?.[0];
               const { seatId, select, ...rest } = item;
               return {
                 ...rest,
@@ -847,6 +847,19 @@ export default factories.createCoreService(table, () => ({
               };
             });
           });
+      }else{
+        result = tickets.flatMap((item) => {
+          return Array.from({ length: item?.select ?? 1 }).map((_, i) => {
+            const seatI = item.isTable
+              ? item.seatId?.[i] || null
+              : item.seatId?.[0];
+            const { seatId, select, ...rest } = item;
+            return {
+              ...rest,
+              seatI,
+            };
+          });
+        });
       }
 
       const ticktsList = await Promise.all(
@@ -878,7 +891,6 @@ export default factories.createCoreService(table, () => ({
       const dateStringTicket = useMoment().format("DDMMYYYY");
       await Promise.all(
         ticktsList.map(async (item) => {
-          console.log("item", item);
           return await TicketUpdate(item.id, {
             id_ticket: encrypt(`ticketId${item.id}${dateStringTicket}`),
           });

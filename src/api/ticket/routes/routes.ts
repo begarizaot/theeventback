@@ -10,5 +10,13 @@ module.exports = {
       path: "/ticket/getScannerTicket/:eventId/:ticketId",
       handler: "ticket.getScannerTicket",
     },
+    {
+      method: "POST",
+      path: "/ticket/postCreateTicket/:orderId",
+      handler: "ticket.postCreateTicket",
+      config: {
+        auth: false,
+      },
+    },
   ],
 };
