@@ -21,4 +21,11 @@ export default factories.createCoreController(table, ({ strapi }) => ({
     } = ctx;
     return await strapi.service(table).getScannerTicket({ user, params });
   },
+  async postCreateTicket(ctx) {
+    const {
+      request: { body },
+      params,
+    } = ctx;
+    return await strapi.service(table).postCreateTicket({ body, params });
+  },
 }));
