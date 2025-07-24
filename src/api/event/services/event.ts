@@ -163,14 +163,16 @@ export default factories.createCoreService(table, () => ({
           },
         },
         {
-          start_date: "asc",
+          start_date: "desc",
         }
       );
-      const serviceTeam = await TeamAccessFindMany({
-        user_id: {
-          id: user.id,
-        },
-      });
+      const serviceTeam = await TeamAccessFindMany(
+        {
+          user_id: {
+            id: user.id,
+          },
+        }
+      );
       const resServiceTeam = (serviceTeam ?? []).map((item: any) => {
         return {
           ...item.event_id,

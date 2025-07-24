@@ -545,46 +545,47 @@ export default factories.createCoreService(table, () => ({
       } = event_id;
 
       let pdfUrl = url_pdf;
+      const pdf = await PdfOrder(event_id, tickets_id);
       if (!url_pdf) {
-        const pdf = await PdfOrder(event_id, tickets_id);
-        pdfUrl = await uploadPDF(pdf, "order", `order_${orderId}`);
-        OrderUpdate(order.id, {
-          url_pdf: pdfUrl,
-        });
+        // pdfUrl = await uploadPDF(pdf, "order", `order_${orderId}`);
+        // OrderUpdate(order.id, {
+        //   url_pdf: pdfUrl,
+        // });
       }
 
-      await sendSMSPhone(
-        `${body?.country || users_id?.country_id?.code || "+1"}${body?.phoneNumber || users_id?.phoneNumber}`,
-        `Your order for ${event_id?.name} has been successfully created. You can download your tickets from the following link: ${pdfUrl}`
-      );
+      // await sendSMSPhone(
+      //   `${body?.country || users_id?.country_id?.code || "+1"}${body?.phoneNumber || users_id?.phoneNumber}`,
+      //   `Your order for ${event_id?.name} has been successfully created. You can download your tickets from the following link: ${pdfUrl}`
+      // );
 
-      await mailSend({
-        email: users_id?.email || "",
-        templateId: process.env.SENDGRID_TEMPLATE_ORDER,
-        dynamicData: {
-          pdfUrl: pdfUrl,
-          ticket_id: order?.order_id,
-          event: {
-            image: event_id?.url_image,
-            name: event_id?.name,
-            date: useMoment(event_id?.start_date).format("dddd, Do MMMM"),
-            time: `${useMoment(event_id?.start_date).format(
-              "HH:mm a"
-            )} - ${useMoment(event_id?.end_date).format("HH:mm a")}`,
-            location: locations.formatted_address,
-            restriction: restriction.title,
-          },
-          tickets: onGroupTickets(tickets_id),
-          refundable: (prices?.totalRefundable || 0).toFixed(2),
-          subTotal: (prices?.discountCode || prices?.subTotal || 0).toFixed(2),
-          serviceFees: (prices?.serviceFee || 0).toFixed(2),
-          proccessingFee: (prices?.processingFee || 0).toFixed(2),
-          total: (prices?.total || 0).toFixed(2),
-        },
-      });
+      // await mailSend({
+      //   email: users_id?.email || "",
+      //   templateId: process.env.SENDGRID_TEMPLATE_ORDER,
+      //   dynamicData: {
+      //     pdfUrl: pdfUrl,
+      //     ticket_id: order?.order_id,
+      //     event: {
+      //       image: event_id?.url_image,
+      //       name: event_id?.name,
+      //       date: useMoment(event_id?.start_date).format("dddd, Do MMMM"),
+      //       time: `${useMoment(event_id?.start_date).format(
+      //         "HH:mm a"
+      //       )} - ${useMoment(event_id?.end_date).format("HH:mm a")}`,
+      //       location: locations.formatted_address,
+      //       restriction: restriction.title,
+      //     },
+      //     tickets: onGroupTickets(tickets_id),
+      //     refundable: (prices?.totalRefundable || 0).toFixed(2),
+      //     subTotal: (prices?.discountCode || prices?.subTotal || 0).toFixed(2),
+      //     serviceFees: (prices?.serviceFee || 0).toFixed(2),
+      //     proccessingFee: (prices?.processingFee || 0).toFixed(2),
+      //     total: (prices?.total || 0).toFixed(2),
+      //   },
+      // });
 
       return {
         message: "Email sent successfully",
+        data: pdf,
         status: true,
       };
     } catch (error) {
@@ -830,21 +831,23 @@ export default factories.createCoreService(table, () => ({
           order_id: orderEncrypt,
         },
       });
-
-      const result = tickets
-        .filter((item) => Array.isArray(item.seatId))
-        .flatMap((item) => {
-          return Array.from({ length: item.select }).map((_, i) => {
-            const seatI = item.isTable
-              ? item.seatId[i] || null
-              : item.seatId[0];
-            const { seatId, select, ...rest } = item;
-            return {
-              ...rest,
-              seatI,
-            };
+      let result = tickets;
+      if (eventData.url_map) {
+        result = tickets
+          .filter((item) => Array.isArray(item.seatId))
+          .flatMap((item) => {
+            return Array.from({ length: item.select }).map((_, i) => {
+              const seatI = item.isTable
+                ? item.seatId[i] || null
+                : item.seatId[0];
+              const { seatId, select, ...rest } = item;
+              return {
+                ...rest,
+                seatI,
+              };
+            });
           });
-        });
+      }
 
       const ticktsList = await Promise.all(
         result.map(async (item) => {
@@ -875,6 +878,7 @@ export default factories.createCoreService(table, () => ({
       const dateStringTicket = useMoment().format("DDMMYYYY");
       await Promise.all(
         ticktsList.map(async (item) => {
+          console.log("item", item);
           return await TicketUpdate(item.id, {
             id_ticket: encrypt(`ticketId${item.id}${dateStringTicket}`),
           });
