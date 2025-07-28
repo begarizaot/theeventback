@@ -26,6 +26,7 @@ export const useSeats = () => {
 
       return { status: true };
     } catch (error) {
+      console.log("Seats",JSON.stringify(error));
       return { message: "Seats not available", status: false };
     }
   };
