@@ -23,6 +23,7 @@
     "@strapi/provider-email-sendgrid": "^5.12.6",
     "@strapi/strapi": "5.12.5",
     "crypto": "^1.0.1",
+    "dayjs": "^1.11.13",
     "image-to-base64": "^2.2.0",
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.48",
