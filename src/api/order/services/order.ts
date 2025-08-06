@@ -196,12 +196,6 @@ export default factories.createCoreService(table, () => ({
         });
       }
 
-      users_id?.phoneNumber &&
-        (await sendSMSPhone(
-          `${users_id?.country_id?.code || "+1"}${users_id?.phoneNumber}`,
-          `Thank you for your order, ${users_id?.firstName || ""} Your ticket to ${event_id?.name} View your ticket here: ${pdfUrl}`
-        ));
-
       await mailSend({
         email: users_id?.email || "",
         templateId: process.env.SENDGRID_TEMPLATE_ORDER,
@@ -226,6 +220,14 @@ export default factories.createCoreService(table, () => ({
           total: (prices?.total || 0).toFixed(2),
         },
       });
+
+      users_id?.phoneNumber &&
+        sendSMSPhone(
+          `${users_id?.country_id?.code || "+1"}${users_id?.phoneNumber}`,
+          `Thank you for your order, ${users_id?.firstName || ""} Your ticket to ${event_id?.name} View your ticket here: ${pdfUrl}`
+        ).catch((error) => {
+          console.log("SMS Error", JSON.stringify(error));
+        });
 
       return {
         message: "Email sent successfully",
@@ -553,11 +555,6 @@ export default factories.createCoreService(table, () => ({
         });
       }
 
-      await sendSMSPhone(
-        `${body?.country || users_id?.country_id?.code || "+1"}${body?.phoneNumber || users_id?.phoneNumber}`,
-        `Thank you for your order, ${users_id?.firstName || ""} Your ticket to ${event_id?.name} View your ticket here: ${pdfUrl}`
-      );
-
       await mailSend({
         email: users_id?.email || "",
         templateId: process.env.SENDGRID_TEMPLATE_ORDER,
@@ -581,6 +578,13 @@ export default factories.createCoreService(table, () => ({
           proccessingFee: (prices?.processingFee || 0).toFixed(2),
           total: (prices?.total || 0).toFixed(2),
         },
+      });
+
+      sendSMSPhone(
+        `${users_id?.country_id?.code || "+1"}${users_id?.phoneNumber}`,
+        `Thank you for your order, ${users_id?.firstName || ""} Your ticket to ${event_id?.name} View your ticket here: ${pdfUrl}`
+      ).catch((error) => {
+        console.log("SMS Error", JSON.stringify(error));
       });
 
       return {
@@ -846,7 +850,7 @@ export default factories.createCoreService(table, () => ({
               };
             });
           });
-      }else{
+      } else {
         result = tickets.flatMap((item) => {
           return Array.from({ length: item?.select ?? 1 }).map((_, i) => {
             const seatI = item.isTable
