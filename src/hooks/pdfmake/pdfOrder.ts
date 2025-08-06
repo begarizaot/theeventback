@@ -94,6 +94,20 @@ export const PdfOrder = (data, tickets) => {
             ],
           },
           {
+            alignment: "center",
+            columns: [
+              {
+                marginTop: 50,
+                marginRight: 20,
+                stack: [
+                  {
+                    text: `${data?.users_id?.firstName || ""} ${data?.users_id?.lastName || ""}`,
+                  },
+                ],
+              },
+            ],
+          },
+          {
             qr: ticket?.id_ticket || "",
             fit: 200,
             alignment: "center",
