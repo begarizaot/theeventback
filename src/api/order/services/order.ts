@@ -189,7 +189,7 @@ export default factories.createCoreService(table, () => ({
 
       let pdfUrl = url_pdf;
       if (!url_pdf) {
-        const pdf = await PdfOrder(event_id, tickets_id);
+        const pdf = await PdfOrder({ ...event_id, users_id }, tickets_id);
         pdfUrl = await uploadPDF(pdf, "order", `order_${orderId}`);
         OrderUpdate(order.id, {
           url_pdf: pdfUrl,
@@ -548,7 +548,7 @@ export default factories.createCoreService(table, () => ({
 
       let pdfUrl = url_pdf;
       if (!url_pdf) {
-        const pdf = await PdfOrder(event_id, tickets_id);
+        const pdf = await PdfOrder({ ...event_id, users_id }, tickets_id);
         pdfUrl = await uploadPDF(pdf, "order", `order_${orderId}`);
         OrderUpdate(order.id, {
           url_pdf: pdfUrl,
