@@ -33,10 +33,10 @@ export const EventDiscountCodeFindOne = async (
           ...filters,
           isVisible: true,
           start_date: {
-            $lte: useMoment().format("YYYY-MM-DD HH:mm:ss"),
+            $lte: useMoment().format("YYYY-MM-DD hh:mm:ss"),
           },
           end_date: {
-            $gte: useMoment().format("YYYY-MM-DD HH:mm:ss"),
+            $gte: useMoment().format("YYYY-MM-DD hh:mm:ss"),
           },
         },
         fields: fields,
