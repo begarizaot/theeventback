@@ -205,10 +205,10 @@ export default factories.createCoreService(table, () => ({
           event: {
             image: event_id?.url_image,
             name: event_id?.name,
-            date: useMoment(event_id?.start_date).format("dddd, Do MMMM"),
+            date: useMoment(event_id?.start_date).format("dddd, D MMMM"),
             time: `${useMoment(event_id?.start_date).format(
-              "HH:mm a"
-            )} - ${useMoment(event_id?.end_date).format("HH:mm a")}`,
+              "hh:mm a"
+            )} - ${useMoment(event_id?.end_date).format("hh:mm a")}`,
             location: locations.formatted_address,
             restriction: restriction.title,
           },
@@ -566,8 +566,8 @@ export default factories.createCoreService(table, () => ({
             name: event_id?.name,
             date: useMoment(event_id?.start_date).format("dddd, Do MMMM"),
             time: `${useMoment(event_id?.start_date).format(
-              "HH:mm a"
-            )} - ${useMoment(event_id?.end_date).format("HH:mm a")}`,
+              "hh:mm a"
+            )} - ${useMoment(event_id?.end_date).format("hh:mm a")}`,
             location: locations.formatted_address,
             restriction: restriction.title,
           },

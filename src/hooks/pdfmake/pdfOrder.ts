@@ -69,8 +69,8 @@ export const PdfOrder = (data, tickets) => {
                   },
                   {
                     text: `${useMoment(data?.start_date).format(
-                      "HH:mm a"
-                    )} - ${useMoment(data?.end_date).format("HH:mm a")}`,
+                      "hh:mm a"
+                    )} - ${useMoment(data?.end_date).format("hh:mm a")}`,
                   },
                   {
                     text: `Age Restriction: ${
