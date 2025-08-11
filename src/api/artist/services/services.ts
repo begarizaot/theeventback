@@ -23,7 +23,7 @@ const populate: any = {
           start_date: {
             $gte: useMoment()
               .subtract(1, "hours")
-              .format("YYYY-MM-DD HH:mm:ss"),
+              .format("YYYY-MM-DD hh:mm:ss"),
           },
         },
         {
@@ -31,7 +31,7 @@ const populate: any = {
             { isEndDate: true },
             {
               end_date: {
-                $gte: useMoment().format("YYYY-MM-DD HH:mm:ss"),
+                $gte: useMoment().format("YYYY-MM-DD hh:mm:ss"),
               },
             },
           ],
@@ -45,7 +45,7 @@ export const filterGeneral = {
   events_ids: {
     isVisible: true,
     start_date: {
-      $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD HH:mm:ss"),
+      $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD hh:mm:ss"),
     },
   },
 };

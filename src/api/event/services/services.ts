@@ -66,7 +66,7 @@ export const filterGeneral = {
         },
         {
           opening_extension_date: {
-            $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD HH:mm:ss"),
+            $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD hh:mm:ss"),
           },
         },
       ],
@@ -80,7 +80,7 @@ export const filterGeneral = {
         },
         {
           start_date: {
-            $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD HH:mm:ss"),
+            $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD hh:mm:ss"),
           },
         },
       ],
@@ -90,7 +90,7 @@ export const filterGeneral = {
         { isEndDate: true },
         {
           end_date: {
-            $gte: useMoment().format("YYYY-MM-DD HH:mm:ss"),
+            $gte: useMoment().format("YYYY-MM-DD hh:mm:ss"),
           },
         },
       ],
