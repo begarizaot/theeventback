@@ -166,21 +166,25 @@ export default factories.createCoreService(table, () => ({
           start_date: "desc",
         }
       );
-      const serviceTeam = await TeamAccessFindMany(
-        {
-          user_id: {
-            id: user.id,
-          },
-        }
-      );
+      const serviceTeam = await TeamAccessFindMany({
+        user_id: {
+          id: user.id,
+        },
+      });
       const resServiceTeam = (serviceTeam ?? []).map((item: any) => {
         return {
           ...item.event_id,
           type_role_id: item.type_role_id,
         };
       });
+
+      const sortedEvents = [...service, ...resServiceTeam].sort(
+        (a, b) =>
+          new Date(b?.start_date).getTime() - new Date(a?.start_date).getTime()
+      );
+
       return {
-        data: [...service, ...resServiceTeam],
+        data: sortedEvents,
         status: true,
       };
     } catch (e) {
