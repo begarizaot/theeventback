@@ -115,6 +115,12 @@
     },
     "map_img_url": {
       "type": "string"
+    },
+    "pixel_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::pixel.pixel",
+      "mappedBy": "event_id"
     }
   }
 }
