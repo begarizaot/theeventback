@@ -30,7 +30,10 @@ import {
   EventTicketCreate,
   EventTicketFindOne,
 } from "../../event-ticket/services/services";
-import { SuperAdminFindMany } from "../../super-admin/services/services";
+import {
+  SuperAdminFindMany,
+  SuperAdminFindOne,
+} from "../../super-admin/services/services";
 import {
   UserFindOne,
   validateUser,
@@ -304,6 +307,12 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
+      const adminUser = await SuperAdminFindOne({
+        users_id: {
+          id: user.id,
+        },
+      });
+
       const event: any = await EventFindOne(null, { id_event: params.id });
       if (!event) {
         return {
@@ -312,8 +321,14 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const res = await OrderAnalityEvent(event.id, event.url_map);
+      let res = await OrderAnalityEvent(event.id, event.url_map);
 
+      if (!adminUser) {
+        res.eventSales.ticketData = res?.eventSales?.ticketData?.filter(
+          (item: any) => item.isAdmin != true
+        );
+      }
+      console.log(res.eventSales.ticketData)
       return {
         data: res,
         status: true,

@@ -245,21 +245,30 @@ export const OrderAnalityEvent = async (eventId: any, showTable?: boolean) => {
         type: "Ticket Comp",
         ...formatGroup(groups.ticketComp),
       },
-      {
-        type: "Discounts",
-        totalQuantity: totalDiscountQuantity,
-        totalValue: totalDiscountValue.toFixed(2),
-      },
-      {
-        type: "Affiliate",
-        totalQuantity: groups.affiliate.totalQuantity,
-        totalValue: groups.affiliate.totalValue.toFixed(2),
-        icon: "pi-percentage",
-      },
+      ...(totalDiscountQuantity
+        ? [
+            {
+              type: "Discounts",
+              totalQuantity: totalDiscountQuantity,
+              totalValue: totalDiscountValue.toFixed(2),
+            },
+          ]
+        : []),
+      ...(groups.affiliate.totalQuantity
+        ? [
+            {
+              type: "Affiliate",
+              totalQuantity: groups.affiliate.totalQuantity,
+              totalValue: groups.affiliate.totalValue.toFixed(2),
+              icon: "pi-percentage",
+            },
+          ]
+        : []),
       {
         type: "Refundable",
         ...formatGroup(groups.refundable),
         icon: "pi-chart-bar",
+        isAdmin: true,
       },
     ],
   };

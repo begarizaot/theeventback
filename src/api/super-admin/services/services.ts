@@ -1,4 +1,4 @@
-export const SuperAdminFindMany = async (filters = {}, sort = {}) => {
+export const SuperAdminFindMany = async (filters = {}) => {
   return await strapi.entityService.findMany("api::super-admin.super-admin", {
     populate: {
       users_id: {
@@ -10,4 +10,20 @@ export const SuperAdminFindMany = async (filters = {}, sort = {}) => {
       isVisible: true,
     },
   });
+};
+
+export const SuperAdminFindOne = async (filters = {}) => {
+  return (
+    await strapi.entityService.findMany("api::super-admin.super-admin", {
+      populate: {
+        users_id: {
+          fields: ["id", "username", "email", "firstName", "lastName"],
+        },
+      },
+      filters: {
+        ...filters,
+        isVisible: true,
+      },
+    })
+  )[0];
 };
