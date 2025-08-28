@@ -328,7 +328,6 @@ export default factories.createCoreService(table, () => ({
           (item: any) => item.isAdmin != true
         );
       }
-      console.log(res.eventSales.ticketData)
       return {
         data: res,
         status: true,
