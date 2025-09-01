@@ -55,7 +55,9 @@ export const useGooglecCloud = () => {
 
       // Guarda el nuevo archivo (lo sobrescribe de todas formas si no haces delete)
       await file.save(buffer, {
-        metadata: { contentType: "application/png" },
+        metadata: { contentType: "image/png" },
+        resumable: false, // recomendable para archivos pequeños
+        public: true      // lo hace accesible públicamente
       });
 
       await file.getSignedUrl({
