@@ -6,6 +6,7 @@ const populate: any = {
         filters: {
           isVisible: true,
         },
+        populate: "*",
       },
     },
   },
