@@ -9,6 +9,8 @@ export const EventLocationFindCreate = async (place: any, event_id: any) => {
       lng: place?.geometry?.location?.lng,
     },
     vicinity: place?.vicinity,
+    city: place?.city,
+    state: place?.state, 
     events_id: event_id,
   };
 

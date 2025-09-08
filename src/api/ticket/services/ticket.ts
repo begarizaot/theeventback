@@ -9,7 +9,6 @@ import { TicketCreate, TicketFindOne, TicketUpdate } from "./services";
 import { useCrypto, useMoment, useSeats } from "../../../hooks";
 
 const { encrypt } = useCrypto();
-const { bookSeats } = useSeats();
 
 const onValidateUSer = async (user, eventId) => {
   if (!user || !user.id) {

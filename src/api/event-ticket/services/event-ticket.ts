@@ -10,7 +10,6 @@ import {
   EventTickettUpdate,
 } from "./services";
 import { EventFindOne } from "../../event/services/services";
-import { onValidateTeamAccess } from "../../team-access/services/services";
 import { useMoment } from "../../../hooks";
 
 const table = "api::event-ticket.event-ticket";

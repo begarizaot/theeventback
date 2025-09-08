@@ -34,7 +34,6 @@ import {
   OrderUpdate,
 } from "./services";
 import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
-import { onValidateTeamAccess } from "../../team-access/services/services";
 import { EventAffiliateFindOne } from "../../event-affiliate/services/services";
 
 const { validateEmail } = useSendGridClient();

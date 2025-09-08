@@ -584,6 +584,7 @@ export interface ApiEventLocationEventLocation
     draftAndPublish: false;
   };
   attributes: {
+    city: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -598,6 +599,7 @@ export interface ApiEventLocationEventLocation
     location: Schema.Attribute.JSON;
     place_id: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    state: Schema.Attribute.String;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

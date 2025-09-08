@@ -4,7 +4,6 @@
 
 import { factories } from "@strapi/strapi";
 import {
-  onValidateTeamAccess,
   populateTeamAccess,
   TeamAccessCreate,
   TeamAccessFindOne,
