@@ -11,7 +11,6 @@ import {
   EventDiscountCodeFindPage,
 } from "./services";
 import { EventFindOne } from "../../event/services/services";
-import { onValidateTeamAccess } from "../../team-access/services/services";
 
 const table = "api::event-discount-code.event-discount-code";
 

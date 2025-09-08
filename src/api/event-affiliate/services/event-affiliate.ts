@@ -7,7 +7,6 @@ import { EventFindOne } from "../../event/services/services";
 import {
   calculateTotal,
   EventAffiliateCreate,
-  EventAffiliateFindOne,
   EventAffiliateFindPage,
   EventAffiliateUpdate,
 } from "./services";

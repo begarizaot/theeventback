@@ -7,7 +7,9 @@
     "displayName": "EventLocations",
     "description": ""
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "title": {
       "type": "string"
@@ -32,6 +34,12 @@
       "relation": "oneToMany",
       "target": "api::event.event",
       "mappedBy": "event_locations_id"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
     }
   }
 }

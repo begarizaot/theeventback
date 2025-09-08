@@ -6,7 +6,6 @@ import { factories } from "@strapi/strapi";
 import { AdminFindMany } from "./services";
 import { EventFindOne } from "../../event/services/services";
 import { TeamAccessFindOne } from "../../team-access/services/services";
-import { fileURLToPath } from "url";
 
 const table = "api::admin.admin";
 

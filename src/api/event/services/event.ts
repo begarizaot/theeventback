@@ -16,29 +16,16 @@ import {
   onValidateTeamAccess,
   TeamAccessCreate,
   TeamAccessFindMany,
-  TeamAccessFindOne,
 } from "../../team-access/services/services";
-import {
-  OrderAnalityEvent,
-  OrderCreate,
-  OrderUpdate,
-} from "../../order/services/services";
+import { OrderAnalityEvent } from "../../order/services/services";
 import { EventLocationFindCreate } from "../../event-location/services/services";
 import { useGooglecCloud, useMoment } from "../../../hooks";
 import { useCrypto } from "../../../hooks/useCrypto";
-import {
-  EventTicketCreate,
-  EventTicketFindOne,
-} from "../../event-ticket/services/services";
+import { EventTicketCreate } from "../../event-ticket/services/services";
 import {
   SuperAdminFindMany,
   SuperAdminFindOne,
 } from "../../super-admin/services/services";
-import {
-  UserFindOne,
-  validateUser,
-} from "../../../extensions/users-permissions/services/services";
-import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
 import { HomeFindMany } from "../../home/services/services";
 
 const { uploadImage } = useGooglecCloud();
