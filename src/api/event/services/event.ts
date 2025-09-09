@@ -413,6 +413,7 @@ export default factories.createCoreService(table, () => ({
               event_id: eventData?.id,
               user_id: item?.users_id?.id,
               type_role_id: 1,
+              isAdmin: true,
             });
           })
         );
