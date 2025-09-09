@@ -16,26 +16,16 @@ import {
   onValidateTeamAccess,
   TeamAccessCreate,
   TeamAccessFindMany,
-  TeamAccessFindOne,
 } from "../../team-access/services/services";
-import {
-  OrderAnalityEvent,
-  OrderCreate,
-  OrderUpdate,
-} from "../../order/services/services";
+import { OrderAnalityEvent } from "../../order/services/services";
 import { EventLocationFindCreate } from "../../event-location/services/services";
 import { useGooglecCloud, useMoment } from "../../../hooks";
 import { useCrypto } from "../../../hooks/useCrypto";
+import { EventTicketCreate } from "../../event-ticket/services/services";
 import {
-  EventTicketCreate,
-  EventTicketFindOne,
-} from "../../event-ticket/services/services";
-import { SuperAdminFindMany } from "../../super-admin/services/services";
-import {
-  UserFindOne,
-  validateUser,
-} from "../../../extensions/users-permissions/services/services";
-import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
+  SuperAdminFindMany,
+  SuperAdminFindOne,
+} from "../../super-admin/services/services";
 import { HomeFindMany } from "../../home/services/services";
 
 const { uploadImage } = useGooglecCloud();
@@ -166,21 +156,25 @@ export default factories.createCoreService(table, () => ({
           start_date: "desc",
         }
       );
-      const serviceTeam = await TeamAccessFindMany(
-        {
-          user_id: {
-            id: user.id,
-          },
-        }
-      );
+      const serviceTeam = await TeamAccessFindMany({
+        user_id: {
+          id: user.id,
+        },
+      });
       const resServiceTeam = (serviceTeam ?? []).map((item: any) => {
         return {
           ...item.event_id,
           type_role_id: item.type_role_id,
         };
       });
+
+      const sortedEvents = [...service, ...resServiceTeam].sort(
+        (a, b) =>
+          new Date(b?.start_date).getTime() - new Date(a?.start_date).getTime()
+      );
+
       return {
-        data: [...service, ...resServiceTeam],
+        data: sortedEvents,
         status: true,
       };
     } catch (e) {
@@ -300,6 +294,12 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
+      const adminUser = await SuperAdminFindOne({
+        users_id: {
+          id: user.id,
+        },
+      });
+
       const event: any = await EventFindOne(null, { id_event: params.id });
       if (!event) {
         return {
@@ -308,8 +308,13 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const res = await OrderAnalityEvent(event.id, event.url_map);
+      let res = await OrderAnalityEvent(event.id, event.url_map);
 
+      if (!adminUser) {
+        res.eventSales.ticketData = res?.eventSales?.ticketData?.filter(
+          (item: any) => item.isAdmin != true
+        );
+      }
       return {
         data: res,
         status: true,
@@ -408,6 +413,7 @@ export default factories.createCoreService(table, () => ({
               event_id: eventData?.id,
               user_id: item?.users_id?.id,
               type_role_id: 1,
+              isAdmin: true,
             });
           })
         );

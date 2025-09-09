@@ -47,6 +47,7 @@ export const populate: any = {
     },
     fields: ["id", "phoneNumber", "email"],
   },
+  pixel_id: true,
 };
 
 export const filterGeneral = {
@@ -66,7 +67,9 @@ export const filterGeneral = {
         },
         {
           opening_extension_date: {
-            $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD hh:mm:ss"),
+            $gte: useMoment()
+              .subtract(1, "hours")
+              .format("YYYY-MM-DD hh:mm:ss"),
           },
         },
       ],
@@ -80,7 +83,9 @@ export const filterGeneral = {
         },
         {
           start_date: {
-            $gte: useMoment().subtract(1, "hours").format("YYYY-MM-DD hh:mm:ss"),
+            $gte: useMoment()
+              .subtract(1, "hours")
+              .format("YYYY-MM-DD hh:mm:ss"),
           },
         },
       ],
@@ -96,7 +101,7 @@ export const filterGeneral = {
       ],
     },
   ],
-}
+};
 
 export const EventFindPage = async (
   filters = {},

@@ -584,6 +584,7 @@ export interface ApiEventLocationEventLocation
     draftAndPublish: false;
   };
   attributes: {
+    city: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -598,6 +599,7 @@ export interface ApiEventLocationEventLocation
     location: Schema.Attribute.JSON;
     place_id: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    state: Schema.Attribute.String;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -758,6 +760,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     map_img_url: Schema.Attribute.String;
     name: Schema.Attribute.String;
     opening_extension_date: Schema.Attribute.DateTime;
+    pixel_id: Schema.Attribute.Relation<'oneToOne', 'api::pixel.pixel'>;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'name'>;
     start_date: Schema.Attribute.DateTime;
@@ -889,6 +892,32 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       'oneToOne',
       'plugin::users-permissions.user'
     >;
+  };
+}
+
+export interface ApiPixelPixel extends Struct.CollectionTypeSchema {
+  collectionName: 'pixels';
+  info: {
+    displayName: 'pixel';
+    pluralName: 'pixels';
+    singularName: 'pixel';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    event_id: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::pixel.pixel'> &
+      Schema.Attribute.Private;
+    pixel_tiktok_id: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1595,6 +1624,7 @@ declare module '@strapi/strapi' {
       'api::global.global': ApiGlobalGlobal;
       'api::home.home': ApiHomeHome;
       'api::order.order': ApiOrderOrder;
+      'api::pixel.pixel': ApiPixelPixel;
       'api::service-fee.service-fee': ApiServiceFeeServiceFee;
       'api::super-admin.super-admin': ApiSuperAdminSuperAdmin;
       'api::team-access.team-access': ApiTeamAccessTeamAccess;

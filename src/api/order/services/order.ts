@@ -34,7 +34,6 @@ import {
   OrderUpdate,
 } from "./services";
 import { TicketCreate, TicketUpdate } from "../../ticket/services/services";
-import { onValidateTeamAccess } from "../../team-access/services/services";
 import { EventAffiliateFindOne } from "../../event-affiliate/services/services";
 
 const { validateEmail } = useSendGridClient();
@@ -138,6 +137,41 @@ const onValidateTicket = async (eventData: any, tickets: any) => {
   return {
     status: true,
   };
+};
+
+const onTicketsFilter = (url_map: any, tickets: any) => {
+  let result = tickets;
+  if (url_map) {
+    result = tickets
+      .filter((item) => Array.isArray(item.seatId))
+      .flatMap((item) => {
+        return Array.from({ length: item?.select ?? 1 }).map((_, i) => {
+          const seatI = item.isTable
+            ? item.seatId?.[i] || null
+            : item.seatId?.[0];
+          const { seatId, select, ...rest } = item;
+          return {
+            ...rest,
+            seatI,
+          };
+        });
+      });
+  } else {
+    result = tickets.flatMap((item) => {
+      return Array.from({ length: item?.select ?? 1 }).map((_, i) => {
+        const seatI = item.isTable
+          ? item.seatId?.[i] || null
+          : item.seatId?.[0];
+        const { seatId, select, ...rest } = item;
+        return {
+          ...rest,
+          seatI,
+        };
+      });
+    });
+  }
+
+  return result;
 };
 
 const table = "api::order.order";
@@ -572,11 +606,17 @@ export default factories.createCoreService(table, () => ({
             restriction: restriction.title,
           },
           tickets: onGroupTickets(tickets_id),
-          refundable: (prices?.totalRefundable || 0).toFixed(2),
+          refundable: order?.freeOrder
+            ? 0
+            : (prices?.totalRefundable || 0).toFixed(2),
           subTotal: (prices?.discountCode || prices?.subTotal || 0).toFixed(2),
-          serviceFees: (prices?.serviceFee || 0).toFixed(2),
-          proccessingFee: (prices?.processingFee || 0).toFixed(2),
-          total: (prices?.total || 0).toFixed(2),
+          serviceFees: order?.freeOrder
+            ? 0
+            : (prices?.serviceFee || 0).toFixed(2),
+          proccessingFee: order?.freeOrder
+            ? 0
+            : (prices?.processingFee || 0).toFixed(2),
+          total: order?.freeOrder ? 0 : (prices?.total || 0).toFixed(2),
         },
       });
 
@@ -834,36 +874,8 @@ export default factories.createCoreService(table, () => ({
           order_id: orderEncrypt,
         },
       });
-      let result = tickets;
-      if (eventData.url_map) {
-        result = tickets
-          .filter((item) => Array.isArray(item.seatId))
-          .flatMap((item) => {
-            return Array.from({ length: item?.select ?? 1 }).map((_, i) => {
-              const seatI = item.isTable
-                ? item.seatId?.[i] || null
-                : item.seatId?.[0];
-              const { seatId, select, ...rest } = item;
-              return {
-                ...rest,
-                seatI,
-              };
-            });
-          });
-      } else {
-        result = tickets.flatMap((item) => {
-          return Array.from({ length: item?.select ?? 1 }).map((_, i) => {
-            const seatI = item.isTable
-              ? item.seatId?.[i] || null
-              : item.seatId?.[0];
-            const { seatId, select, ...rest } = item;
-            return {
-              ...rest,
-              seatI,
-            };
-          });
-        });
-      }
+
+      let result = onTicketsFilter(eventData.url_map, tickets);
 
       const ticktsList = await Promise.all(
         result.map(async (item) => {
@@ -963,20 +975,7 @@ export default factories.createCoreService(table, () => ({
         order_id: orderEncrypt,
       });
 
-      const result = tickets
-        .filter((item) => Array.isArray(item.seatId))
-        .flatMap((item) => {
-          return Array.from({ length: item.select }).map((_, i) => {
-            const seatI = item.isTable
-              ? item.seatId[i] || null
-              : item.seatId[0];
-            const { seatId, select, ...rest } = item;
-            return {
-              ...rest,
-              seatI,
-            };
-          });
-        });
+      let result = onTicketsFilter(eventData.url_map, tickets);
 
       const ticktsList = await Promise.all(
         result.map(async (item) => {
