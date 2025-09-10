@@ -177,7 +177,7 @@ export default factories.createCoreService(table, () => ({
 
       if (!userData) {
         let phoneData: any = await UserFindOne({
-          phoneNumber: { $eqi: phone || "" },
+          phoneNumber: { $eqi: String(phone) || "" },
         });
 
         if (phoneData) {
@@ -193,7 +193,7 @@ export default factories.createCoreService(table, () => ({
 
         userData = await UserCreate({
           ...body,
-          phoneNumber: phone,
+          phoneNumber: String(phone),
           country_id: countryReq.id,
         });
       }

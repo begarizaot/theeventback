@@ -117,7 +117,7 @@ export default factories.createCoreService(table, () => ({
       const userData = await UserFindOne({
         $or: [
           { email: { $eqi: body.email || "" } },
-          { phoneNumber: { $eqi: body.phoneNumber || "" } },
+          { phoneNumber: { $eqi: String(body.phoneNumber) || "" } },
         ],
       });
 

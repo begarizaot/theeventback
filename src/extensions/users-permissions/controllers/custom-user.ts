@@ -115,7 +115,7 @@ export default {
       const userData: any = await UserFindOne(
         validateType
           ? { email: { $eqi: email || "" } }
-          : { phoneNumber: { $eqi: phone || "" } }
+          : { phoneNumber: { $eqi: String(phone) || "" } }
       );
 
       if (!userData) {
@@ -169,7 +169,7 @@ export default {
       const userData = await UserFindOne(
         validateType
           ? { email: { $eqi: email || "" } }
-          : { phoneNumber: { $eqi: phone || "" } }
+          : { phoneNumber: { $eqi: String(phone) || "" } }
       );
 
       if (!userData) {
@@ -216,7 +216,7 @@ export default {
       const userData = await UserFindOne({
         $or: [
           { email: { $eqi: email || "" } },
-          { phoneNumber: { $eqi: phone || "" } },
+          { phoneNumber: { $eqi: String(phone) || "" } },
         ],
       });
 
@@ -234,7 +234,7 @@ export default {
 
       await UserCreate({
         ...body,
-        phoneNumber: phone,
+        phoneNumber: String(phone),
         country_id: countryReq.id,
       });
 
@@ -252,6 +252,7 @@ export default {
         data: { ...body, type: "Phone" },
       };
     } catch (error) {
+      console.log(error.message);
       return {
         status: false,
         data: null,
