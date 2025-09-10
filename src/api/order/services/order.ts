@@ -258,7 +258,7 @@ export default factories.createCoreService(table, () => ({
       users_id?.phoneNumber &&
         sendSMSPhone(
           `${users_id?.country_id?.code || "+1"}${users_id?.phoneNumber}`,
-          `Thank you for your order, ${users_id?.firstName || ""} Your ticket to ${event_id?.name} View your ticket here: ${pdfUrl}`
+          `Thank you for your order, ${users_id?.firstName || ""}! Your ticket to "${event_id?.name}" is confirmed. View your ticket here: ${pdfUrl}`
         ).catch((error) => {
           console.log("SMS Error", JSON.stringify(error));
         });
@@ -622,7 +622,7 @@ export default factories.createCoreService(table, () => ({
 
       sendSMSPhone(
         `${users_id?.country_id?.code || "+1"}${users_id?.phoneNumber}`,
-        `Thank you for your order, ${users_id?.firstName || ""} Your ticket to ${event_id?.name} View your ticket here: ${pdfUrl}`
+        `Thank you for your order, ${users_id?.firstName || ""}! Your ticket to "${event_id?.name}" is confirmed. View your ticket here: ${pdfUrl}`
       ).catch((error) => {
         console.log("SMS Error", JSON.stringify(error));
       });
