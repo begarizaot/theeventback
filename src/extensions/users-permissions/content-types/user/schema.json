@@ -8,7 +8,9 @@
     "pluralName": "users",
     "displayName": "User"
   },
-  "options": {},
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
     "username": {
       "type": "string",
@@ -81,7 +83,7 @@
     },
     "isOrganizer": {
       "type": "boolean",
-      "default": false
+      "default": true
     }
   }
 }
