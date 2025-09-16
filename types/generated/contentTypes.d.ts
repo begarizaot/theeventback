@@ -921,6 +921,36 @@ export interface ApiPixelPixel extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiPolicyPolicy extends Struct.SingleTypeSchema {
+  collectionName: 'policies';
+  info: {
+    description: '';
+    displayName: 'policy';
+    pluralName: 'policies';
+    singularName: 'policy';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::policy.policy'
+    > &
+      Schema.Attribute.Private;
+    privacyPolicy: Schema.Attribute.Blocks;
+    publishedAt: Schema.Attribute.DateTime;
+    termsAndConditions: Schema.Attribute.Blocks;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiServiceFeeServiceFee extends Struct.SingleTypeSchema {
   collectionName: 'service_fees';
   info: {
@@ -1625,6 +1655,7 @@ declare module '@strapi/strapi' {
       'api::home.home': ApiHomeHome;
       'api::order.order': ApiOrderOrder;
       'api::pixel.pixel': ApiPixelPixel;
+      'api::policy.policy': ApiPolicyPolicy;
       'api::service-fee.service-fee': ApiServiceFeeServiceFee;
       'api::super-admin.super-admin': ApiSuperAdminSuperAdmin;
       'api::team-access.team-access': ApiTeamAccessTeamAccess;
