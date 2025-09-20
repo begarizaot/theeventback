@@ -108,6 +108,7 @@ export default factories.createCoreService(table, () => ({
         isVisible: true,
       });
       let value = 0;
+      let freeTicket = false;
 
       if (service) {
         const stock = service.stock <= service.stock_max;
@@ -120,11 +121,17 @@ export default factories.createCoreService(table, () => ({
               (body.value * (stock ? service.value : 0)) / 100
             ).toFixed(2)
           ));
+
+        service.state == "por" &&
+          stock &&
+          service.value >= 100 &&
+          (freeTicket = true);
       }
 
       return {
         data: value,
         message: value <= 0 ? "Discount code is not valid" : "",
+        freeTicket,
         status: true,
       };
     } catch (e) {
@@ -203,7 +210,7 @@ export default factories.createCoreService(table, () => ({
         },
       });
 
-      if (codeExict) {
+      if (codeExict && codeExict.id !== id) {
         return {
           status: false,
           message: "Code already exists",
