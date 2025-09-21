@@ -26,7 +26,7 @@ export const useStripe = () => {
     const resPaymentIntent = await stripe.paymentIntents.create({
       amount: Number((parseFloat(ev.amount) * 100).toFixed(0)),
       currency: process.env.STRIPE_CURRENCY,
-      payment_method_types: ["card","affirm"],
+      payment_method_types: ["card"],
       payment_method: ev.payment,
       metadata: { ...ev.data },
       customer: customer,
