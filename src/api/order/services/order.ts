@@ -19,7 +19,10 @@ import {
   EventTickettUpdate,
 } from "../../event-ticket/services/services";
 import { useSeats } from "../../../hooks/useSeats";
-import { validateUser } from "../../../extensions/users-permissions/services/services";
+import {
+  UserUpdate,
+  validateUser,
+} from "../../../extensions/users-permissions/services/services";
 import {
   EventDiscountCodeFindOne,
   EventDiscountCodeUpdate,
@@ -803,8 +806,14 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      delete userData?.phoneNumber;
-      const valUser = await validateUser(userData);
+      let dataUser = { ...userData };
+      delete dataUser?.phoneNumber;
+      const valUser = await validateUser(dataUser);
+      if (!valUser.phoneNumber) {
+        await UserUpdate(valUser.id, {
+          phoneNumber: userData.phoneNumber || null,
+        });
+      }
 
       let affiliateId = null;
       if (aff) {
