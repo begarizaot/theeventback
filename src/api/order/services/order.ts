@@ -811,7 +811,7 @@ export default factories.createCoreService(table, () => ({
       const valUser = await validateUser(dataUser);
       if (!valUser.phoneNumber) {
         await UserUpdate(valUser.id, {
-          phoneNumber: userData.phoneNumber || null,
+          phoneNumber: String(userData.phoneNumber) || null,
         });
       }
 
