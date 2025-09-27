@@ -126,27 +126,27 @@ export default {
         };
       }
 
-      const emailRes = await sendSMS({
-        to: validateType ? email : `${country}${phone}`,
-        channel: validateType ? "email" : "sms",
-      });
+      // const emailRes = await sendSMS({
+      //   to: validateType ? email : `${country}${phone}`,
+      //   channel: validateType ? "email" : "sms",
+      // });
 
-      if (!emailRes.status) {
-        return emailRes;
-      }
+      // if (!emailRes.status) {
+      //   return emailRes;
+      // }
 
-      if (!userData?.country_id) {
-        const countryRes = await CountryFindOne({
-          code: { $eqi: country },
-        });
-        UserUpdate(userData?.id, {
-          country_id: countryRes.id,
-        });
-      }
+      // if (!userData?.country_id) {
+      //   const countryRes = await CountryFindOne({
+      //     code: { $eqi: country },
+      //   });
+      //   UserUpdate(userData?.id, {
+      //     country_id: countryRes.id,
+      //   });
+      // }
 
       return {
         status: true,
-        data: body,
+        data: onResData(userData),
       };
     } catch (error) {
       return {
