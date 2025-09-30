@@ -235,7 +235,7 @@ export default factories.createCoreService(table, () => ({
 
       await mailSend({
         email: users_id?.email || "",
-        templateId: process.env.SENDGRID_TEMPLATE_ORDER,
+        templateId: process.env.POSTMARK_TEMPLATE_ORDER,
         dynamicData: {
           pdfUrl: pdfUrl,
           ticket_id: order?.order_id,
@@ -594,7 +594,7 @@ export default factories.createCoreService(table, () => ({
 
       await mailSend({
         email: users_id?.email || "",
-        templateId: process.env.SENDGRID_TEMPLATE_ORDER,
+        templateId: process.env.POSTMARK_TEMPLATE_ORDER,
         dynamicData: {
           pdfUrl: pdfUrl,
           ticket_id: order?.order_id,
