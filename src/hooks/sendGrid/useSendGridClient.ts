@@ -18,7 +18,6 @@ export const useSendGridClient = () => {
       if (
         data &&
         (data.result == "deliverable" ||
-          data.result == "undeliverable" ||
           data.result == "low_deliverability" ||
           data.result == "risky")
       ) {
