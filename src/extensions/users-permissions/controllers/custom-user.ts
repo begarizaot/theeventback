@@ -80,6 +80,7 @@ export default {
       } = ctx;
 
       const emailVal = await validateEmail(email);
+      console.log(emailVal);
       if (emailVal != "Valid") {
         return {
           status: false,

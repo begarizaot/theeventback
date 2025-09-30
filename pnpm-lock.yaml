@@ -50,6 +50,9 @@ importers:
       pg:
         specifier: 8.8.0
         version: 8.8.0
+      postmark:
+        specifier: ^4.0.5
+        version: 4.0.5
       react:
         specifier: ^18.0.0
         version: 18.3.1
@@ -4838,6 +4841,9 @@ packages:
   postgres-interval@1.2.0:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
+
+  postmark@4.0.5:
+    resolution: {integrity: sha512-nerZdd3TwOH4CgGboZnlUM/q7oZk0EqpZgJL+Y3Nup8kHeaukxouQ6JcFF3EJEijc4QbuNv1TefGhboAKtf/SQ==}
 
   preferred-pm@3.1.2:
     resolution: {integrity: sha512-nk7dKrcW8hfCZ4H6klWcdRknBOXWzNQByJ0oJyX97BOupsYD+FzLS4hflgEu/uPUEHZCuRfMxzCBsuWd7OzT8Q==}
@@ -11992,6 +11998,12 @@ snapshots:
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
+
+  postmark@4.0.5:
+    dependencies:
+      axios: 1.8.4(debug@4.3.4)
+    transitivePeerDependencies:
+      - debug
 
   preferred-pm@3.1.2:
     dependencies:
