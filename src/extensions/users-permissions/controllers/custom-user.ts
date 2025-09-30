@@ -84,7 +84,7 @@ export default {
       if (emailVal != "Valid") {
         return {
           status: false,
-          message: "Verify your email not valid",
+          message: "Please enter a valid email address to continue.",
         };
       }
 
