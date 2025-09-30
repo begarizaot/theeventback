@@ -650,7 +650,7 @@ export default factories.createCoreService(table, () => ({
         return {
           status: false,
           data: null,
-          message: "Verify your email not valid",
+          message: "Please enter a valid email address to continue.",
         };
       }
 
@@ -743,7 +743,7 @@ export default factories.createCoreService(table, () => ({
         return {
           status: false,
           data: null,
-          message: "Verify your email not valid",
+          message: "Please enter a valid email address to continue.",
         };
       }
 
