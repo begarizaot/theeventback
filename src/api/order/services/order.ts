@@ -690,6 +690,10 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
+      let dataUser = { ...userData };
+      delete dataUser?.phoneNumber;
+      await validateUser(dataUser);
+
       let paymentMethodId = paymentId;
       if (type == "card") {
         const paymentMethod = await createPaymentMethod(paymentMethodId);
@@ -765,6 +769,10 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
+      let dataUser = { ...userData };
+      delete dataUser?.phoneNumber;
+      await validateUser(dataUser);
+
       return {
         data: "",
         status: true,
@@ -809,11 +817,6 @@ export default factories.createCoreService(table, () => ({
       let dataUser = { ...userData };
       delete dataUser?.phoneNumber;
       const valUser = await validateUser(dataUser);
-      if (!valUser.phoneNumber) {
-        await UserUpdate(valUser.id, {
-          phoneNumber: String(userData.phoneNumber) || null,
-        });
-      }
 
       let affiliateId = null;
       if (aff) {
@@ -957,8 +960,9 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      delete userData?.phoneNumber;
-      const valUser = await validateUser(userData);
+      let dataUser = { ...userData };
+      delete dataUser?.phoneNumber;
+      const valUser = await validateUser(dataUser);
 
       // url_pdf
       const order = await OrderCreate({

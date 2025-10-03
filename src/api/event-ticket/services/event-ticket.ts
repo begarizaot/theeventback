@@ -131,7 +131,7 @@ export default factories.createCoreService(table, () => ({
 
       const quantityDiff = body.quantity - ticket.stock;
 
-      if (quantityDiff < 0) {
+      if (quantityDiff <= 0) {
         return {
           status: false,
           message: "Stock cannot be less than quantity",
@@ -139,8 +139,7 @@ export default factories.createCoreService(table, () => ({
       }
 
       await EventTickettUpdate(id, {
-        ...body,
-        stock: body?.stock || 0,
+        quantity: body?.quantity || 0,
         ...(body?.startEndDate && {
           start_date: useMoment(body?.startEndDate[0]),
           end_date: useMoment(body?.startEndDate[1]),

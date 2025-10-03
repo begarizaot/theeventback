@@ -44,7 +44,7 @@ export const validateUser = async (body: User) => {
     const countryReq = await CountryFindOne({
       code: { $eqi: body?.country },
     });
-    userData = strapi.entityService.create("plugin::users-permissions.user", {
+    userData = await strapi.entityService.create("plugin::users-permissions.user", {
       data: {
         ...body,
         username: `${body.email}`.toLocaleLowerCase(),
