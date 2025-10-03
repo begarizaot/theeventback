@@ -740,7 +740,7 @@ export default factories.createCoreService(table, () => ({
   },
   async postCreatePaymentFree({ user, body }) {
     try {
-      const { userData, eventId, tickets } = body;
+      const { userData, eventId, tickets,freeCode } = body;
 
       const emailVal = await validateEmail(userData.email);
       if (emailVal != "Valid") {
@@ -751,7 +751,7 @@ export default factories.createCoreService(table, () => ({
         };
       }
 
-      const eventData: any = await onValidateData(user, eventId);
+      const eventData: any = await onValidateData(freeCode ?userData: user, eventId);
 
       if (!eventData?.status) {
         return {
